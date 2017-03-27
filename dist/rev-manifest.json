@@ -1,0 +1,11 @@
+{
+  "base.css": "css/base.css",
+  "base.js": "js/base.js",
+  "commons.js": "commons.js",
+  "font/icomoon.eot": "font/icomoon.eot",
+  "font/icomoon.ttf": "font/icomoon.ttf",
+  "font/icomoon.woff": "font/icomoon.woff",
+  "img/icomoon.svg": "img/icomoon.svg",
+  "index.css": "css/index.css",
+  "index.js": "js/index.js"
+}

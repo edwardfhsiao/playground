@@ -1,0 +1,21 @@
+@import "~gridle/sass/grid.scss";
+@include gridle_setup( (
+    context : 24,
+    gutter-width : 20px,
+    // direction : rtl,
+) );
+
+@include gridle_register_state ( mobile , (
+    max-width : 480px
+) );
+@include gridle_register_state ( tablet , (
+    min-width : 481px,
+    max-width : 1024px
+) ) ;
+
+// even with full custom queries :
+@include gridle_register_state ( landscape, (
+    query : "(orientation : landscape)"
+) );
+
+@include gridle_generate_classes();
