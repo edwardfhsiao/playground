@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import cx from 'classnames';
-import styles from './input.css';
+import styles from './select.css';
 import Utils from 'COMMON/utils';
 import Validator from 'COMMON/validator';
 import ValidatorMsg from 'COMMON/validator_message';
 
-class Input extends React.Component {
+class Select extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +26,7 @@ class Input extends React.Component {
   }
 
   onChange() {
-    const value = this.input.value;
+    const value = this.select.value;
     const { onChange } = this.props;
     onChange && onChange(value);
     const { error } = this.state;
@@ -47,50 +47,33 @@ class Input extends React.Component {
     onKeyUp && onKeyUp();
   }
 
-  check(inputValue) {
+  check(selectValue) {
     const { validationOption } = this.props;
     const {
-      type,
       check,
       required,
       name,
-      min,
-      max,
       locale,
     } = validationOption;
     if (!check) { return }
 
-    const value = inputValue || this.input.value;
+    const value = selectValue || this.select.value;
     let error = false;
     if (required) {
       error = Validator['empty'](value) ? true : false;
-      if (!error){
-        if (type === 'number'){
-          error = !Validator[type](value, min, max);
-        }
-        else if (type === 'phone'){
-          error = !Validator[type](value, locale);
-        }
-        else{
-          error = !Validator[type](value);
-        }
-      }
     }
-    let msg = error ? ValidatorMsg[type] : '';
-    if (error && type === 'number' && (min || max)){
-      msg = `${name}的值必须为${min}-${max}`;
-    }
+    let msg = error ? ValidatorMsg['empty'] : '';
     this.setState({ error, msg });
   }
 
   render() {
     const {
       value,
+      option,
       disabled,
       id,
       className,
       placeholder,
-      type,
       style,
       onFocus,
       onKeyDown,
@@ -103,8 +86,8 @@ class Input extends React.Component {
       msg,
     } = this.state;
 
-    const inputClass = cx(
-      styles['input'],
+    const selectClass = cx(
+      styles['select'],
       styles[style],
       styles[className],
       error && styles['error'],
@@ -121,47 +104,53 @@ class Input extends React.Component {
       msgHtml = <div className={errorMsgClass}>{msg}</div>;
     }
 
+    let optionHtml;
+    if (option.length){
+      optionHtml = option.map((item, key) => {
+        return <option key={key} value={item.value}>{item.text ? item.text : item.value}</option>
+      });
+    }
+
     return (
       <div>
-        <input
+        <select
           id={id}
-          type={type}
           value={value}
-          className={inputClass}
+          className={selectClass}
           onChange={this.onChange}
-          onKeyDown={onKeyDown}
           onBlur={this.onBlur}
-          onKeyUp={this.onKeyUp}
           onFocus={onFocus}
           placeholder={placeholder}
-          ref={ref => this.input = ref}
-        />
+          ref={ref => this.select = ref}
+        >
+        {value && value != '' ? `` : <option value={value}>{placeholder}</option>}
+        {optionHtml}
+        </select>
         {msgHtml}
       </div>
     )
   }
 }
 
-Input.propTypes = {
+Select.propTypes = {
   disabled: PropTypes.bool,
   value: PropTypes.string,
+  option: PropTypes.array,
   className: PropTypes.string,
   customStyle: PropTypes.string,
   id: PropTypes.string,
   placeholder: PropTypes.string,
-  type: PropTypes.string,
   style: PropTypes.string,
   onChange: PropTypes.func,
   onBlur: PropTypes.func,
-  onKeyUp: PropTypes.func,
   onFocus: PropTypes.func,
-  onKeyDown: PropTypes.func,
   validationOption: PropTypes.object,
 };
 
-Input.defaultProps = {
+Select.defaultProps = {
   disabled: false,
   value: '',
+  option: [],
   className: '',
   customStyle: '',
   id: '',
@@ -170,21 +159,16 @@ Input.defaultProps = {
   style: 'material',
   validationOption: {
     check: true,
-    type: '',
     required: false,
     showMsg: false,
     name: '',
     msgOnSuccess: '',
     msgOnError: '',
-    max: 0,
-    min: 0,
     locale: 'zh-CN',
   },
   onChange: () => {},
   onBlur: () => {},
-  onKeyUp: () => {},
   onFocus: () => {},
-  onKeyDown: () => {},
 }
 
-export default Input;
+export default Select;

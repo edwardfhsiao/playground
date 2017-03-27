@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Utils from 'COMMON/utils';
 import Input from 'COMPONENTS/Input';
+import Select from 'COMPONENTS/Select';
 import Label from 'COMPONENTS/Label';
 import interact from 'interact.js';
 // import '../../../my_plugins/my_test';
@@ -24,11 +25,13 @@ class Index extends Component {
       times: 0,
       value: '',
       phone: '',
+      days: '',
     };
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPhoneKeyDown = this.onPhoneKeyDown.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePhoneInputChange = this.handlePhoneInputChange.bind(this);
+    this.handleDaysSelectChange = this.handleDaysSelectChange.bind(this);
   }
 
   componentWillMount() {
@@ -240,6 +243,10 @@ class Index extends Component {
     }
   }
 
+  handleDaysSelectChange(value) {
+    this.setState({ days: value })
+  }
+
   clearInput() {
     this.setState({ value: '' });
   }
@@ -272,11 +279,13 @@ class Index extends Component {
     let {
       value,
       phone,
+      days,
     } = this.state;
     // let styles = {};
     // console.log(styles);
     // console.log(styles['icon']);
     // console.log(styles['icon-chevron-right']);
+    let option = [{value: 'Monday', text: '周一'}, {value: 'Tuesday', text: '周二'}];
     return(
       <div className="">
         <div id="fullpage">
@@ -398,6 +407,26 @@ class Index extends Component {
                   msgOnError: `invalid value`,
                   max: 10,
                   min: 1,
+                }
+              }
+            />
+            <Select
+              id="3"
+              ref="3"
+              value={days}
+              option={option}
+              style="borderless"
+              className="underline"
+              placeholder={`新增`}
+              onChange={this.handleDaysSelectChange}
+              validationOption={
+                {
+                  check: true,
+                  required: true,
+                  showMsg: true,
+                  name: `日期`,
+                  msgOnSuccess: `valid value`,
+                  msgOnError: `invalid value`,
                 }
               }
             />

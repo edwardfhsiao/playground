@@ -12,7 +12,7 @@
 }
 
 
-/*.input {
+/*.select {
   outline: none;
   background-color: var(--oc-white);
   font-size: 14px;
@@ -31,10 +31,10 @@
   &::-moz-placeholder {
     color: var(--oc-gray-5);
   }
-  &::-webkit-input-placeholder {
+  &::-webkit-select-placeholder {
     color: var(--oc-gray-5);
   }
-  &:-ms-input-placeholder {
+  &:-ms-select-placeholder {
     color: var(--oc-gray-5);
   }
   &.material {
@@ -103,11 +103,11 @@
   }
 }*/
 
-.input {
+.select {
   outline: none;
   height: var(--inputHeight);
-  line-height: var(--inputHeight);
-  padding: 0 1em;
+  line-height: 1em;
+     padding: 0 1em;
   font-size: 1em;
   transition: border 0.2s;
   color: var(--oc-gray-7);
