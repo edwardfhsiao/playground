@@ -289,27 +289,82 @@ class Index extends Component {
             </div>
 
             <div className={`${styles['timetable']} `}>
-              <div className={`${styles['row']}`}>
-                <div className={`${styles['col-1']}`}>
-                  周一
+              <div className={`${styles['grid']}`}>
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>&nbsp;</div>
                 </div>
-                <div className={`${styles['col-1']}`}>
-                  周二
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周一</div>
                 </div>
-                <div className={`${styles['col-1']}`}>
-                  周三
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周二</div>
                 </div>
-                <div className={`${styles['col-1']}`}>
-                  周四
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周三</div>
                 </div>
-                <div className={`${styles['col-1']}`}>
-                  周五
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周四</div>
                 </div>
-                <div className={`${styles['col-1']}`}>
-                  周六
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周五</div>
                 </div>
-                <div className={`${styles['col-1']}`}>
-                  周七
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周六</div>
+                </div>
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>周七</div>
+                </div>
+              </div>
+              <div className={`${styles['grid']}`}>
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>00:00</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+              </div>
+              <div className={`${styles['grid']}`}>
+                <div className={`${styles['col']} ${styles['title']}`}>
+                  <div>01:00</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
+                </div>
+                <div className={`${styles['col']}`}>
+                  <div>&nbsp;</div>
                 </div>
               </div>
             </div>

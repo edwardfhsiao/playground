@@ -1,21 +1,35 @@
-/*body {
-  background: #000;
+@import 'open-color/open-color.css';
+:root {
+  --oc-white: #ffffff;
 }
-*/
 
-.timetable {}
+.timetable {
+  /*border: 1px solid var(--oc-gray-7);*/
+}
 
 .my-grid {
   composes: my-grid from 'STYLES/layout.css';
 }
 
-.row {
+.grid {
   lost-utility: clearfix;
-  lost-center: 980px;
+  lost-center: 100%;
+  background: var(--oc-red-7);
 }
 
-.col-1 {
-  lost-column: 1/7;
+.col {
+  lost-column: 1/8 0 0;
+  /*lost-column: 300/950 0 20px;*/
+  text-align: center;
+  background: var(--oc-red-8);
+  &.title{
+    color: var(--oc-white);
+    background: var(--oc-red-7);
+  }
+}
+
+.col>div{
+  padding: 30px;
 }
 
 .resize-drag {

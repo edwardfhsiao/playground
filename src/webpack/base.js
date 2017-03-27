@@ -64,10 +64,10 @@ var config = module.exports = {
                 require('postcss-import')({
                   addDependencyTo: webpack
                 }),
-                require('stylelint')({
-                  config: stylelintRules,
-                  failOnError: true
-                }),
+                // require('stylelint')({
+                //   config: stylelintRules,
+                //   failOnError: true
+                // }),
                 require('autoprefixer'),
                 require('postcss-cssnext')({
                   autoprefixer: {
