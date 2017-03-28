@@ -109,10 +109,20 @@ class Calendar extends React.Component {
 
   changeMonth (month, direction) {
     if (direction == PREV_TRANSITION){
-      month = month - 1;
+      if (month == 1){
+        month = 12;
+      }
+      else{
+        month = month - 1;
+      }
     }
     else{
-      month = month + 1;
+      if (month == 12){
+        month = 1;
+      }
+      else{
+        month = month + 1;
+      }
     }
     let {
       year,
