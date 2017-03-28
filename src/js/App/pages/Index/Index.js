@@ -5,6 +5,7 @@ import Input from 'COMPONENTS/Input';
 import Select from 'COMPONENTS/Select';
 import Label from 'COMPONENTS/Label';
 import interact from 'interact.js';
+import DatePicker from 'COMPONENTS/DatePicker';
 // import '../../../my_plugins/my_test';
 import cx from 'classnames';
 import styles from './styles/index.css';
@@ -290,7 +291,7 @@ class Index extends Component {
       <div className="">
         <div id="fullpage">
           <div className="section intros" data-anchor="intros">
-
+            <DatePicker />
             <div className={resizeContainerClass}>
               <div className={resizeDragClass}>
                  Resize from any edge or corner

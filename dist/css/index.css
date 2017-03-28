@@ -441,6 +441,248 @@ border: 1px solid #37b24d
   -webkit-transition: background-color 0.2s;
   transition: background-color 0.2s
 }
+/*
+ *
+ *  𝗖 𝗢 𝗟 𝗢 𝗥
+ *  v 1.5.1
+ *
+ *  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+:root {
+
+/*  General
+ *  ─────────────────────────────────── */
+
+
+/*  Gray
+ *  ─────────────────────────────────── */
+
+
+/*  Red
+ *  ─────────────────────────────────── */
+
+
+/*  Pink
+ *  ─────────────────────────────────── */
+
+
+/*  Grape
+ *  ─────────────────────────────────── */
+
+
+/*  Violet
+ *  ─────────────────────────────────── */
+
+
+/*  Indigo
+ *  ─────────────────────────────────── */
+
+
+/*  Blue
+ *  ─────────────────────────────────── */
+
+
+/*  Cyan
+ *  ─────────────────────────────────── */
+
+
+/*  Teal
+ *  ─────────────────────────────────── */
+
+
+/*  Green
+ *  ─────────────────────────────────── */
+
+
+/*  Lime
+ *  ─────────────────────────────────── */
+
+
+/*  Yellow
+ *  ─────────────────────────────────── */
+
+
+/*  Orange
+ *  ─────────────────────────────────── */
+
+}
+
+.style__lighty-date-picker___1phF0 {
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .10), 0 0 4px 0 rgba(0, 0, 0, .08);
+  width: 400px;
+  min-height: 400px;
+  padding: 20px;
+}
+
+.style__lighty-date-picker___1phF0 svg {
+  height: 19px;
+  width: 19px;
+  fill: #82888a;
+}
+
+.style__lighty-date-picker___1phF0 .style__col___3dUkx {
+  display: inline-block;
+}
+
+.style__lighty-date-picker___1phF0 .style__col___3dUkx:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.style__lighty-date-picker___1phF0 .style__col-3___1BaOr {
+  width: 25%;
+}
+
+.style__lighty-date-picker___1phF0 .style__col-6___CY8yE {
+  width: 50%;
+}
+
+.style__lighty-date-picker__header___1cPW7 {
+  text-align: center;
+}
+
+.style__lighty-date-picker--inline-block___1Z7TT {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.style__lighty-date-picker__table___1cC0- {
+  display: table;
+  border-collapse: collapse;
+  /*width: 80%;*/
+  margin: 0 auto;
+}
+
+.style__lighty-date-picker__table-row___k-RUB {
+  display: table-row;
+}
+
+.style__lighty-date-picker__table-cel___1_Crm {
+  font-size: 12px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #e9ecef;
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  cursor: default
+}
+
+.style__lighty-date-picker__table-cel___1_Crm.style__disabled___21MoG {
+color: #adb5bd;
+
+}
+
+.style__lighty-date-picker__table-cel___1_Crm.style__no-border___3wG4Y {
+border: 1px solid transparent;
+
+}
+
+.style__lighty-date-picker__table-cel___1_Crm.style__lighty-date-picker__date-item___1ZP4e {}
+
+.style__lighty-date-picker__table-cel___1_Crm.style__lighty-date-picker__date-item___1ZP4e:not(.style__disabled___21MoG) {
+cursor: pointer;/*transition: all .4s;*/
+
+}
+
+.style__lighty-date-picker__table-cel___1_Crm.style__lighty-date-picker__date-item___1ZP4e:not(.style__disabled___21MoG):hover {
+color: #ffffff;
+background: #329af0 padding-box;
+
+}
+
+.style__lighty-date-picker__table-caption___1K6rq {
+  color: #495057;
+}
+.transition__forwardEnter___23-lA {
+  will-change: transform;
+  -webkit-transition: opacity .5s ease-in, -webkit-transform .3s;
+  transition: opacity .5s ease-in, -webkit-transform .3s;
+  transition: opacity .5s ease-in, transform .3s;
+  transition: opacity .5s ease-in, transform .3s, -webkit-transform .3s;
+  opacity: 1;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0)
+}
+
+.transition__forwardEnter___23-lA.transition__forwardEnterActive___3n3qD {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0)
+}
+
+.transition__forwardLeave___3Q22L {
+  opacity: 1;
+  -webkit-transition: opacity .5s ease-in;
+  transition: opacity .5s ease-in
+}
+
+.transition__forwardLeave___3Q22L.transition__forwardLeaveActive___3eaZP {
+  opacity: 0
+}
+
+.transition__backwardEnter___s9Fc6 {
+}
+
+.transition__backwardEnter___s9Fc6.transition__backwardEnterActive___4R11A {
+}
+
+.transition__backwardLeave___1P5-s {
+  will-change: transform, opacity;
+  -webkit-transition: -webkit-transform .3s ease-in;
+  transition: -webkit-transform .3s ease-in;
+  transition: transform .3s ease-in;
+  transition: transform .3s ease-in, -webkit-transform .3s ease-in;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0)
+}
+
+.transition__backwardLeave___1P5-s.transition__backwardLeaveActive___11aDp {
+}
+.transition_forward__forwardEnter___HCxJT {
+  will-change: transform;
+  -webkit-transition: opacity .5s ease-in, -webkit-transform .3s;
+  transition: opacity .5s ease-in, -webkit-transform .3s;
+  transition: opacity .5s ease-in, transform .3s;
+  transition: opacity .5s ease-in, transform .3s, -webkit-transform .3s;
+  opacity: 1;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0)
+}
+
+.transition_forward__forwardEnter___HCxJT.transition_forward__forwardEnterActive___1Sznc {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0)
+}
+
+.transition_forward__forwardLeave___2Cy87 {
+  opacity: 1;
+  -webkit-transition: opacity .5s ease-in;
+  transition: opacity .5s ease-in
+}
+
+.transition_forward__forwardLeave___2Cy87.transition_forward__forwardLeaveActive___1eqSt {
+  opacity: 0
+}.transition_backward__backwardEnter___3BNVx {
+}
+
+.transition_backward__backwardEnter___3BNVx.transition_backward__backwardEnterActive___vcjJp {
+}
+
+.transition_backward__backwardLeave___2yfEy {
+  will-change: transform, opacity;
+  -webkit-transition: -webkit-transform .3s ease-in;
+  transition: -webkit-transform .3s ease-in;
+  transition: transform .3s ease-in;
+  transition: transform .3s ease-in, -webkit-transform .3s ease-in;
+  -webkit-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0)
+}
+
+.transition_backward__backwardLeave___2yfEy.transition_backward__backwardLeaveActive___24TZd {
+}
 body,
 html {
   height: 100%;

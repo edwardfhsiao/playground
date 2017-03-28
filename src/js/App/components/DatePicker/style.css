@@ -1,0 +1,88 @@
+@import 'open-color/open-color.css';
+:root {
+  --oc-white: #ffffff;
+}
+
+.lighty-date-picker {
+  box-shadow: var(--shadowInput);
+  width: 400px;
+  min-height: 400px;
+  padding: 20px;
+}
+
+.lighty-date-picker svg {
+  height: 19px;
+  width: 19px;
+  fill: #82888a;
+}
+
+.lighty-date-picker .col {
+  display: inline-block;
+}
+
+.lighty-date-picker .col:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.lighty-date-picker .col-3 {
+  width: 25%;
+}
+
+.lighty-date-picker .col-6 {
+  width: 50%;
+}
+
+.lighty-date-picker__header {
+  text-align: center;
+}
+
+.lighty-date-picker--inline-block {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.lighty-date-picker__table {
+  display: table;
+  border-collapse: collapse;
+  /*width: 80%;*/
+  margin: 0 auto;
+}
+
+.lighty-date-picker__table-row {
+  display: table-row;
+}
+
+.lighty-date-picker__table-cel {
+  font-size: 12px;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid var(--oc-gray-2);
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  cursor: default;
+  &.disabled {
+    color: var(--oc-gray-5);
+  }
+  &.no-border {
+    border: 1px solid transparent;
+  }
+  &.lighty-date-picker__date-item {
+    &:not(.disabled) {
+      cursor: pointer;
+      /*transition: all .4s;*/
+      &:hover {
+        color: var(--oc-white);
+        background: var(--oc-blue-5) padding-box;
+      }
+    }
+  }
+}
+
+.lighty-date-picker__table-caption {
+  color: var(--oc-gray-7);
+}

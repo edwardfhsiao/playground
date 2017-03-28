@@ -1,0 +1,28 @@
+.forwardEnter {
+  will-change: transform;
+  transition: opacity .5s ease-in, transform .3s;
+  opacity: 1;
+  transform: translate3d(100%, 0, 0);
+  &.forwardEnterActive {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.forwardLeave {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+  &.forwardLeaveActive {
+    opacity: 0;
+  }
+}
+
+.backwardEnter {
+  &.backwardEnterActive {}
+}
+
+.backwardLeave {
+  will-change: transform, opacity;
+  transition: transform .3s ease-in;
+  transform: translate3d(100%, 0, 0);
+  &.backwardLeaveActive {}
+}

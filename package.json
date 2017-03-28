@@ -36,7 +36,7 @@
     "postcss-cssnext": "^2.9.0",
     "react": "^15.3.2",
     "react-addons-create-fragment": "^15.3.2",
-    "react-addons-css-transition-group": "^15.3.2",
+    "react-addons-css-transition-group": "^15.4.2",
     "react-addons-update": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-dragula": "^1.1.17",
