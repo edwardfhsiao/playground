@@ -8,4 +8,17 @@ export const MONTH_NAME = {
   'zh-CN': ['一月','二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
 }
 
+export const LANG = {
+  'en-US': {
+    'today': 'Today',
+    'reset': 'Reset',
+    'clear': 'Clear',
+  },
+  'zh-CN': {
+    'today': '今天',
+    'reset': '重置',
+    'clear': '清零',
+  },
+}
+
 export const WEEK_NUMBER = 7;

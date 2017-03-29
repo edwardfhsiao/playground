@@ -5,7 +5,7 @@ import Input from 'COMPONENTS/Input';
 import Select from 'COMPONENTS/Select';
 import Label from 'COMPONENTS/Label';
 import interact from 'interact.js';
-import DatePicker from 'COMPONENTS/DatePicker';
+import PickyDateTime from 'COMPONENTS/PickyDateTime';
 // import '../../../my_plugins/my_test';
 import cx from 'classnames';
 import styles from './styles/index.css';
@@ -45,6 +45,10 @@ class Index extends Component {
     // this.initD3();
     this.initInteract();
     // $('.intros').alertWhileClick('a');
+  }
+
+  onDateSelect(year, month, date) {
+
   }
 
   initInteract() {
@@ -291,7 +295,9 @@ class Index extends Component {
       <div className="">
         <div id="fullpage">
           <div className="section intros" data-anchor="intros">
-            <DatePicker />
+            <PickyDateTime
+              onDateSelect={this.onDateSelect.bind(this)}
+            />
             <div className={resizeContainerClass}>
               <div className={resizeDragClass}>
                  Resize from any edge or corner
