@@ -55,6 +55,12 @@ class Calendar extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+      const differentTitle = this.props.title !== nextProps.title;
+      const differentDone = this.props.done !== nextProps.done
+      return differentTitle || differentDone;
+  }
+
   componentDidMount() {
     window.addEventListener('mousedown', this.pageClick.bind(this), false);
   }
@@ -275,9 +281,6 @@ class Calendar extends React.Component {
         if (size == 's'){
           height = 285;
         }
-        if (size == 'xs'){
-          height = 235;
-        }
         transitionContainerStyle = {
           height: `${height}px`
         }
@@ -345,7 +348,7 @@ class Calendar extends React.Component {
           </div>
           <div className={`${STYLE['col']} ${STYLE['col-6']}`}>
             <div className={`${selectorPanelClass}`} ref={ref => this.monthSelectorPanel = ref} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
-              <div className={`${STYLE['picky-date-time-dropdown__menu']} ${STYLE[size]}`}>
+              <div className={`${STYLE['picky-date-time-dropdown__menu']}`}>
                 <div className={`${STYLE['picky-date-time-dropdown__month']}`}>
                   {selectorPanelMonthHtml}
                 </div>

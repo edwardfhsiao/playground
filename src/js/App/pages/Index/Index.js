@@ -27,6 +27,7 @@ class Index extends Component {
       value: '',
       phone: '',
       days: '',
+      showPickyDateTime: false,
     };
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPhoneKeyDown = this.onPhoneKeyDown.bind(this);
@@ -47,8 +48,28 @@ class Index extends Component {
     // $('.intros').alertWhileClick('a');
   }
 
-  onDateSelect(year, month, date) {
+  onYearPicked(yearInfo) {
+    console.log(yearInfo);
+  }
 
+  onMonthPicked(monthInfo) {
+    console.log(monthInfo);
+  }
+
+  onDatePicked(dateInfo) {
+    console.log(dateInfo);
+  }
+
+  onReset(dateInfo) {
+    console.log(dateInfo);
+  }
+
+  openPickyDateTime() {
+    this.setState({showPickyDateTime: true});
+  }
+
+  onClose() {
+    this.setState({showPickyDateTime: false});
   }
 
   initInteract() {
@@ -285,6 +306,7 @@ class Index extends Component {
       value,
       phone,
       days,
+      showPickyDateTime,
     } = this.state;
     // let styles = {};
     // console.log(styles);
@@ -295,8 +317,17 @@ class Index extends Component {
       <div className="">
         <div id="fullpage">
           <div className="section intros" data-anchor="intros">
+            <div onClick={this.openPickyDateTime.bind(this)}>dd</div>
             <PickyDateTime
-              onDateSelect={this.onDateSelect.bind(this)}
+              size="XS"
+              mode={0}
+              locale={`zh-CNs`}
+              show={showPickyDateTime}
+              onClose={this.onClose.bind(this)}
+              onYearPicked={this.onYearPicked.bind(this)}
+              onMonthPicked={this.onMonthPicked.bind(this)}
+              onDatePicked={this.onDatePicked.bind(this)}
+              onReset={this.onReset.bind(this)}
             />
             <div className={resizeContainerClass}>
               <div className={resizeDragClass}>
