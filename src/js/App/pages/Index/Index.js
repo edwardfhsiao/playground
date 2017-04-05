@@ -320,9 +320,9 @@ class Index extends Component {
             <div onClick={this.openPickyDateTime.bind(this)}>dd</div>
             <PickyDateTime
               size="XS"
-              mode={0}
+              mode={1}
               locale={`zh-CNs`}
-              show={showPickyDateTime}
+              show={true}
               onClose={this.onClose.bind(this)}
               onYearPicked={this.onYearPicked.bind(this)}
               onMonthPicked={this.onMonthPicked.bind(this)}

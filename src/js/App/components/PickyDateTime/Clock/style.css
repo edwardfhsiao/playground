@@ -1,328 +1,109 @@
 @import 'open-color/open-color.css';
 :root {
   --oc-white: #ffffff;
-  --item-width-l: 60px;
-  --item-width-m: 40px;
-  --item-width-s: 25px;
-  --item-height-l: 60px;
-  --item-height-m: 40px;
-  --item-height-s: 25px;
+  --clock-width-l: 60px;
+  --clock-width-m: 40px;
+  --clock-width-s: 25px;
+  --clock-width-xs: 180px;
+  --clock-height-l: 60px;
+  --clock-height-m: 40px;
+  --clock-height-s: 25px;
+  --clock-height-xs: 180px;
 }
 
+.picky-date-time-clock {}
 
-/* dropdown section */
+.picky-date-time-clock__header {}
 
-.picky-date-time__selector-panel {}
-
-.picky-date-time-dropdown {
+.picky-date-time-clock__circle {
   position: relative;
-}
-
-.picky-date-time-dropdown__menu-no-effect {
-  display: none;
-}
-
-.picky-date-time-dropdown.visible .picky-date-time-dropdown__menu {
-  transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
-  transform: translate(-50%, 0) scale(1, 1)\9;
-  opacity: 1;
-  padding: 10px;
-  z-index: 1000;
-}
-
-.picky-date-time-dropdown.visible .picky-date-time-dropdown__menu-no-effect {
-  display: block;
-}
-
-.picky-date-time-dropdown .picky-date-time-dropdown__menu {
-  will-change: transform, opacity;
-  transform: translate3d(-50%, 0, 0) scale3d(1, 0, 1);
-  transform: translate(-50%, 0) scale(1, 0)\9;
-  opacity: 0;
-  left: 50%;
-  width: 300px;
-  text-align: center;
-  transform-origin: 0 0;
-  transition: transform .4s, opacity .2s;
-  position: absolute;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08), 0 0 1px 0 rgba(0, 0, 0, 0.12);
-  z-index: -1;
-  margin-top: 25px;
-  background: var(--oc-white);
-}
-
-.picky-date-time-dropdown .picky-date-time-dropdown__container {
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 10px;
-}
-
-.picky-date-time-dropdown .picky-date-time-dropdown__item {
-  padding: 1px 4px;
-  line-height: 20px;
-  transition: background .4s;
-  cursor: pointer;
-  display: block;
-}
-
-.picky-date-time-dropdown__month {
-  background: var(--oc-white);
-  lost-utility: clearfix;
-  lost-center: 100%;
-}
-
-.picky-date-time-dropdown__month-item {
-  lost-waffle: 1/4 0 0;
-  background: var(--oc-white);
-  cursor: pointer;
-  float: left;
-}
-
-.picky-date-time-dropdown__month-item>div {
-  &.s {
-    font-size: 12px;
-    padding: 10px 2px;
-  }
-  padding: 10px;
-  font-size: 14px;
-  margin: 5px;
-  background: var(--oc-white);
-  transition: all .3s;
-  &:hover {
-    background: var(--oc-blue-3);
-    color: var(--oc-white);
-  }
-}
-
-.picky-date-time-dropdown__month-item.active>div {
-  background: var(--oc-blue-5);
-  color: var(--oc-white);
-}
-
-.picky-date-time-dropdown .picky-date-time-dropdown__item:hover {
-  background: #eee;
-}
-
-.picky-date-time-dropdown__year {
-  position: absolute;
-  overflow: hidden;
-  width: 100%;
-  background: var(--oc-white);
-  lost-utility: clearfix;
-  lost-center: 100%;
-}
-
-.picky-date-time-dropdown__year-item {
-  lost-column: 1/5 0 0;
-  background: var(--oc-white);
-  cursor: pointer;
-  float: left;
-}
-
-.picky-date-time-dropdown__year-item>div {
-  &.s {
-    font-size: 12px;
-    padding: 10px 2px;
-  }
-  padding: 10px;
-  margin: 2px;
-  font-size: 14px;
-  background: var(--oc-white);
-  transition: all .3s;
-  &:hover {
-    background: var(--oc-blue-3);
-    color: var(--oc-white);
-  }
-}
-
-.picky-date-time-dropdown__year-item.active>div {
-  background: var(--oc-blue-5);
-  color: var(--oc-white);
-}
-
-.picky-date-time__selector-panel-icon {
-  position: absolute;
-  bottom: 15px;
-  z-index: 10;
-}
-
-.picky-date-time__selector-panel-icon--left {
-  left: 5px;
-}
-
-.picky-date-time__selector-panel-icon--right {
-  right: 5px;
-}
-
-
-/* end of dropdown section */
-
-.picky-date-time__today {
-  font-size: 12px;
-  margin-top: 10px;
-}
-
-.picky-date-time__today .picky-date-time__icon {
-  font-size: 15px;
-}
-
-.picky-date-time__clicker {
-  cursor: pointer;
-}
-
-.col {
-  display: inline-block;
-}
-
-.col:before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-
-.picky-date-time__title {
-  cursor: pointer;
-  width: 100%;
-  position: absolute;
-}
-
-.picky-date-time__inline-span span {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.picky-date-time__inline-span:before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-
-.picky-date-time__content {}
-
-.picky-date-time__icon {
-  font-size: 20px;
-}
-
-.col-3 {
-  width: 25%;
-}
-
-.col-6 {
-  width: 50%;
-}
-
-.picky-date-time__header {
-  text-align: center;
-}
-
-.picky-date-time--inline-block {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.picky-date-time__table {
-  display: table;
-  border-collapse: collapse;
-  margin: 0 auto;
-}
-
-.picky-date-time__table-row {
-  display: table-row;
-}
-
-.picky-date-time__table-cel {
-  font-size: 12px;
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-  border: 1px solid var(--oc-gray-2);
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  cursor: default;
-  transition: all .3s;
-  background: var(--oc-white);
-  color: var(--oc-gray-7);
+  border: 1px solid var(--oc-gray-5);
+  border-radius: 50%;
+  box-shadow: var(--shadow5);
+  margin-top: 18px;
   &.l {
-    font-size: 14px;
-    width: var(--item-width-l);
-    height: var(--item-height-l);
+    width: var(--clock-width-l);
+    height: var(--clock-height-l);
   }
   &.m {
-    width: var(--item-width-m);
-    height: var(--item-height-m);
+    width: var(--clock-width-m);
+    height: var(--clock-height-m);
   }
   &.s {
-    width: var(--item-width-s);
-    height: var(--item-height-s);
+    width: var(--clock-width-s);
+    height: var(--clock-height-s);
   }
-  &.disabled {
-    color: var(--oc-gray-5);
-  }
-  &.today {
-    color: var(--oc-red-5);
-  }
-  &.active {
-    &:not(.today) {
-      color: var(--oc-blue-5);
-    }
-  }
-  &.no-border {
-    border: 1px solid transparent;
-  }
-  &.picky-date-time__date-item {
-    position: relative;
-    &:not(.disabled) {
-      cursor: pointer;
-      &:hover {
-        color: var(--oc-white);
-        background: var(--oc-blue-3);
-      }
-    }
-  }
-  &.picky-date-time__date-item .picky-date-time__icon {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    font-size: 12px;
+  &.xs {
+    width: var(--clock-width-xs);
+    height: var(--clock-height-xs);
   }
 }
 
-.picky-date-time__table-caption {
-  color: var(--oc-gray-7);
-}
-
-.picky-date-time__mask {
-  opacity: 0;
-  filter: alpha(opacity=0);
+.picky-date-time-clock__clock-minute {
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  &.visible {
-    opacity: 1 !important;
-    filter: alpha(opacity=100);
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    z-index: 1 !important;
+  left: 50%;
+  top: 50%;
+  height: 2px;
+  background: var(--oc-gray-5);
+  width: 1px;
+}
+
+.picky-date-time-clock__clock-minute--five {
+  height: 3px;
+  background: var(--oc-gray-7);
+  width: 1px;
+  &.picky-date-time-clock__clock-minute--quarter {
+    height: 6px;
+    background: var(--oc-gray-8);
+    width: 1px;
   }
 }
 
-.picky-date-time__button {
-  display: inline-block;
-  color: var(--oc-gray-6);
-  cursor: pointer;
-  padding: 5px 10px;
-  border: 1px solid var(--oc-gray-4);
-  transition: all .3s;
+.picky-date-time-clock__clock-center,
+.picky-date-time-clock__clock-hand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  box-shadow: var(--shadow5);
+  -webkit-font-smoothing: antialiased;
+  transform-origin: 50% 50%;
+  /*transition: all .3s;*/
+}
+
+.picky-date-time-clock__clock-center {
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background: var(--oc-white);
-  &:hover {
-    border: 1px solid var(--oc-blue-4);
-    background: var(--oc-blue-4);
-    color: var(--oc-white);
-  }
+  border: 2px solid var(--oc-gray-6);
+  box-shadow: var(--shadow7);
+  z-index: 5;
+}
+
+.picky-date-time-clock__clock-hand--second {
+  /*transform: translate(-1.2px, -51%) rotate(0deg) translate(0px, -30%) scale(1, 1);*/
+  width: 2px;
+  height: 70px;
+  background: var(--oc-red-5);
+  z-index: 3;
+  cursor: move;
+}
+
+.picky-date-time-clock__clock-hand--minute {
+  /*transform: translate(0, -51%) rotate(20deg) translate(0px, -30%) scale(1, 1);*/
+  width: 2px;
+  height: 65px;
+  background: var(--oc-gray-6);
+  z-index: 2;
+  cursor: move;
+}
+
+.picky-date-time-clock__clock-hand--hour {
+  /*transform: translate(0, -48%) rotate(100deg) translate(0px, -25%) scale(1, 1);*/
+  width: 3px;
+  height: 50px;
+  background: var(--oc-gray-7);
+  z-index: 1;
+  cursor: move;
 }

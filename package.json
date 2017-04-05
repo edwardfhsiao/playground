@@ -38,6 +38,7 @@
     "react-addons-create-fragment": "^15.3.2",
     "react-addons-css-transition-group": "^15.4.2",
     "react-addons-update": "^15.3.2",
+    "react-date-picker": "^5.3.28",
     "react-dom": "^15.3.2",
     "react-dragula": "^1.1.17",
     "react-paginate": "^4.1.1",
@@ -54,7 +55,6 @@
   },
   "devDependencies": {
     "add-asset-html-webpack-plugin": "^1.0.2",
-    "autoprefixer": "^6.4.0",
     "babel-core": "^6.2.1",
     "babel-loader": "^6.1.0",
     "babel-plugin-transform-runtime": "^6.15.0",

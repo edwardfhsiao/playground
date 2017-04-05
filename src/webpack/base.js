@@ -68,7 +68,6 @@ var config = module.exports = {
                 //   config: stylelintRules,
                 //   failOnError: true
                 // }),
-                require('autoprefixer'),
                 require('postcss-cssnext')({
                   autoprefixer: {
                     browsers: "ie >= 9, ..."

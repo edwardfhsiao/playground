@@ -1,4 +1,7 @@
-/*@import 'open-color/open-color.css';*/
+@import 'open-color/open-color.css';
+:root {
+  --oc-white: #ffffff;
+}
 
 .label {
   display: inline-block;

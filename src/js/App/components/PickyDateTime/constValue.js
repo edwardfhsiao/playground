@@ -32,6 +32,8 @@ const LANG = {
   },
 }
 
+const POINTER_ROTATE = 0;
+
 const WEEK_NUMBER = 7;
 
 const getDaysArray = (year, month, locale = 'zh-cn') => {
@@ -137,6 +139,7 @@ export {
   MONTH_NAME,
   LANG,
   WEEK_NUMBER,
+  POINTER_ROTATE,
   SIZE_RANGE,
   LOCALE_RANGE,
   DEFAULT_LACALE,

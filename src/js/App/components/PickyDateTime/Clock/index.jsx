@@ -1,224 +1,307 @@
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import update from 'react-addons-update';
 import React, { PropTypes } from 'react';
-import assign from 'object-assign'
-import MonthView from 'COMPONENTS/PickyDateTime/MonthView';
-import STYLE from 'COMPONENTS/PickyDateTime/Calendar/style.css';
-import TRANSITION_STYLE from 'COMPONENTS/PickyDateTime/transition.css';
+import ReactDOM from 'react-dom';
+import STYLE from 'COMPONENTS/PickyDateTime/Clock/style.css';
 import 'COMPONENTS/PickyDateTime/icon.css';
 import cx from 'classnames';
 
 import {
-  WEEK_NAME,
-  MONTH_NAME,
-  WEEK_NUMBER,
   LANG,
-  PREV_TRANSITION,
-  NEXT_TRANSITION,
-  SELECTOR_YEAR_SET_NUMBER,
+  POINTER_ROTATE,
   getDaysArray,
   getDaysListByMonth,
   getYearSet,
 } from 'COMPONENTS/PickyDateTime/constValue';
 
-class Calendar extends React.Component {
+const emptyFn = () => {}
+
+const R2D = 180 / Math.PI;
+
+const SECOND_DEGREE_NUMBER = 6;
+const MINUTE_DEGREE_NUMBER = 6;
+const HOUR_DEGREE_NUMBER = 30;
+
+const getTodayObj = function () {
+  let today = new Date();
+  let year = today.getFullYear();
+  let month = today.getMonth() + 1;
+  let date = today.getDate();
+
+  let hour = today.getHours()
+  let minute = today.getMinutes();
+  let second = today.getSeconds();
+  if (second < 10){
+    second = '0' + second;
+  }
+  if (minute < 10){
+    minute = '0' + minute;
+  }
+  let meridiem = parseInt(hour) < 12 ? 'AM' : 'PM';
+  let hourText = hour > 12 ? hour - 12 : hour;
+  if (hourText < 10){
+    hourText = '0' + hourText;
+  }
+  return { year, month, date, hour, minute, second, meridiem, hourText, }
+}
+
+class Clock extends React.Component {
   constructor(props) {
     super(props)
-    let today = new Date();
-    let year = today.getFullYear();
-    let month = today.getMonth() + 1;
-    let date = today.getDate();
-    let dates = getDaysArray(year, month, );
+    let todayObj = getTodayObj();
+    let { hour, minute, second, meridiem, hourText, } = todayObj;
+
+    this.startX = 0; this.startY = 0; this.originX = null; this.originY = null;
+
+    let secondDegree = second * SECOND_DEGREE_NUMBER;
+    let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
+    let hourDegree = hour * HOUR_DEGREE_NUMBER;
+    let clockHandObj = {value: '', degree: '', isMouseOver: '', isDragging: '', startAngle: '', angle: '', meridiem: '', isMouseOver: false, isDragging: false,};
 
     this.state = {
-      dates: dates,
-      pickedYearMonth: {
-        year: year,
-        month: month,
-        string: `${year}-${month}`,
-      },
-      pickedDateInfo: {
-        date,
-        year,
-        month,
-      },
-      currentYearMonthDate: {
-        date,
-        year,
-        month,
-      },
-      direction: NEXT_TRANSITION,
-      yearSelectorPanelList: getYearSet(year),
-      yearSelectorPanel: year,
-      showMask: false,
-      showSelectorPanel: false,
+      clockHandSecond: this.updateClockHandObj(clockHandObj, second, secondDegree, secondDegree, secondDegree, meridiem),
+      clockHandMinute: this.updateClockHandObj(clockHandObj, minute, minuteDegree, minuteDegree, minuteDegree, meridiem),
+      clockHandHour: this.updateClockHandObj(clockHandObj, hourText, hourDegree, hourDegree, hourDegree, meridiem),
+    };
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+  }
+
+  componentDidMount(){
+    if (!this.originX) {
+      const centerPoint = ReactDOM.findDOMNode(this.clockCenter);
+      const centerPointPos = centerPoint.getBoundingClientRect();
+      this.originX = centerPointPos.left + centerPoint.clientWidth;
+      this.originY = centerPointPos.top + centerPoint.clientWidth;
+    }
+    if (document.addEventListener) {
+      document.addEventListener('mousemove', this.handleMouseMove, true);
+      document.addEventListener('mouseup', this.handleMouseUp, true);
+    } else {
+      document.attachEvent('onmousemove', this.handleMouseMove);
+      document.attachEvent('onmouseup', this.handleMouseUp);
+    }
+    this.initializeClock();
+  }
+
+  componentWillUnmount() {
+    if (document.removeEventListener) {
+      document.removeEventListener('mousemove', this.handleMouseMove, true);
+      document.removeEventListener('mouseup', this.handleMouseUp, true);
+    } else {
+      document.detachEvent('onmousemove', this.handleMouseMove);
+      document.detachEvent('onmouseup', this.handleMouseUp);
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-      const differentTitle = this.props.title !== nextProps.title;
-      const differentDone = this.props.done !== nextProps.done
-      return differentTitle || differentDone;
+  updateClockHandObj (o, value, degree, startAngle, angle, meridiem, isMouseOver = false, isDragging = false){
+    o = update(o, {value: {$set: value}, degree: {$set: degree}, startAngle: {$set: startAngle}, angle: {$set: angle}, meridiem: {$set: meridiem}, isMouseOver: {$set: isMouseOver}, isDragging: {$set: isDragging}});
+    return o;
   }
 
-  componentDidMount() {
-    window.addEventListener('mousedown', this.pageClick.bind(this), false);
+  initializeClock() {
+    this.timeinterval = setInterval(this.updateClock.bind(this), 1000);
   }
 
-  componentDidUpdate(prevProps, prevState){
-    if (prevState.pickedYearMonth != this.state.pickedYearMonth){
-      let dates = getDaysArray(this.state.pickedYearMonth.year, this.state.pickedYearMonth.month, );
-      this.setState({dates});
-    }
-  }
-
-  pageClick(e) {
-    if (this.mouseIsDownOnSelectorPanelClicker) {
+  updateClock() {
+    let { clockHandSecond, clockHandMinute, clockHandHour,} = this.state;
+    if (clockHandSecond.isDragging || clockHandMinute.isDragging || clockHandHour.isDragging){
+      clearInterval(this.timeinterval);
       return;
     }
-    this.setState({
-        showSelectorPanel: false,
-        showMask: false,
+    let todayObj = getTodayObj();
+    let { hour, minute, second, meridiem, hourText,} = todayObj;
+    let secondDegree = second * SECOND_DEGREE_NUMBER;
+    let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
+    let hourDegree = hour * HOUR_DEGREE_NUMBER;
+    clockHandSecond = this.updateClockHandObj(clockHandSecond, second, secondDegree, secondDegree, secondDegree, meridiem);
+    clockHandMinute = this.updateClockHandObj(clockHandMinute, hourText, minuteDegree, minuteDegree, minuteDegree, meridiem);
+    clockHandHour = this.updateClockHandObj(clockHandHour, hourText, hourDegree, hourDegree, hourDegree, meridiem);
+    this.setState({ clockHandSecond, clockHandMinute, clockHandHour,});
+  }
+
+  onFocus(){
+    clearInterval(this.timeinterval);
+  }
+
+  onClick(e){
+    // debugger;
+  }
+
+  handleMouseWheel(e){
+    this.onKeyDown({
+      key: e.deltaY > 0 ? 'ArrowUp' : 'ArrowDown',
+      type: event.type || 'unknown',
+      stopPropagation: typeof event.stopPropagation == 'function' ? () => event.stopPropagation(): emptyFn,
+      preventDefault: typeof event.preventDefault == 'function' ? () => event.preventDefault(): emptyFn
     });
+    e.preventDefault();
   }
 
-  pickYear (year, direction) {
-    if (direction == PREV_TRANSITION){
-      year = year - 1;
+  onKeyDown(e) {
+    let { key } = e;
+    let el = this.timeInput;
+    let range = {
+      start: el.selectionStart,
+      end: el.selectionEnd,
+    };
+    let elObj;
+    let refName;
+    let meridiem = 'AM';
+    debugger;
+    if (range.start >= 0 && range.end <= 2){
+      refName = 'clockHandHour';
+      elObj = this.state.clockHandHour;
     }
-    else{
-      year = year + 1;
+    else if (range.start >= 3 && range.end <= 5){
+      refName = 'clockHandMinute';
+      elObj = this.state.clockHandMinute;
     }
-    let {
-      pickedYearMonth,
-    } = this.state;
-    let {
-      month,
-    } = pickedYearMonth;
-    pickedYearMonth = update(pickedYearMonth, {
-        year: {$set: year},
-        string: {$set: `${year}-${month}`},
+    else if (range.start >= 6 && range.end <= 8){
+      refName = 'clockHandSecond';
+      elObj = this.state.clockHandSecond;
+    }
+    else if (range.start >= 9){
+      refName = 'clockHandHour';
+      elObj = this.state.clockHandHour;
+      if (elObj.meridiem == 'AM'){
+        meridiem = 'PM';
       }
-    );
-    this.setState({
-      pickedYearMonth,
-      direction,
+      elObj = update(elObj, {meridiem: {$set: meridiem},});
+      this.setState({[refName]: elObj})
+      return;
+    }
+    // let value = el.value;
+    // let selectedValue = parseInt(value.substring(range.start, range.end));
+    let newValue;
+    if (key == 'ArrowUp' || key == 'ArrowDown') {
+      if (key == 'ArrowUp'){
+        newValue = parseInt(elObj.value) + 1;
+      }
+      else if (key == 'ArrowDown'){
+        newValue = parseInt(elObj.value) - 1;
+      }
+      if (newValue < 10){
+        newValue = '0' + newValue;
+      }
+      // value = value.replace(selectedValue, newValue);
+      let newDegree;
+      if (refName == 'clockHandSecond'){
+        newDegree = parseInt(newValue) * SECOND_DEGREE_NUMBER;
+      }
+      if (refName == 'clockHandMinute'){
+        newDegree = parseInt(newValue) * MINUTE_DEGREE_NUMBER;
+      }
+      if (refName == 'clockHandHour'){
+        newDegree = parseInt(newValue) * HOUR_DEGREE_NUMBER;
+      }
+      elObj = update(elObj, {
+        value: {$set: newValue},
+        degree: {$set: newDegree},
+        startAngle: {$set: newDegree},
+        angle: {$set: newDegree},
+      });
+      this.setState({[refName]: elObj})
+      el.setSelectionRange(range.start, range.end);
+      e.stopPropagation();
+    }
+  }
+
+  onMouseOver(refName){
+    let elObj = this.state[refName];
+    elObj = update(elObj, {isMouseOver: {$set: true}});
+    this.setState({[refName]: elObj});
+  }
+
+  onMouseOut(refName){
+    let elObj = this.state[refName];
+    elObj = update(elObj, {isMouseOver: {$set: false}});
+    this.setState({[refName]: elObj});
+  }
+
+  handleMouseDown(refName, e){
+    let elObj = this.state[refName];
+
+    let x = e.clientX - this.originX;
+    let y = e.clientY - this.originY;
+    let startAngle = R2D * Math.atan2(y, x);
+    elObj = update(elObj, {
+      isDragging: {$set: true},
+      startAngle: {$set: startAngle},
     });
-    this.props.onMonthPicked({year});
+    this.setState({[refName]: elObj});
   }
 
-  pickMonth (month, direction) {
+  handleMouseMove(e){
     let {
-      pickedYearMonth,
+      clockHandSecond,
+      clockHandMinute,
+      clockHandHour,
     } = this.state;
-    let {
-      year,
-    } = pickedYearMonth;
-    if (direction == PREV_TRANSITION){
-      if (month == 1){
-        month = 12;
-        year = year - 1;
+    if (clockHandSecond.isDragging || clockHandMinute.isDragging || clockHandHour.isDragging){
+      let refName;
+      let roundingAngle = SECOND_DEGREE_NUMBER;
+      if (clockHandSecond.isDragging){
+        refName = 'clockHandSecond';
       }
-      else{
-        month = month - 1;
+      if (clockHandMinute.isDragging){
+        refName = 'clockHandMinute';
       }
+      if (clockHandHour.isDragging){
+        refName = 'clockHandHour';
+        roundingAngle = HOUR_DEGREE_NUMBER;
+      }
+      let elObj = this.state[refName];
+      let x = e.clientX - this.originX;
+      let y = e.clientY - this.originY;
+      let d = R2D * Math.atan2(y, x);
+      let rotation = parseInt(d - elObj.startAngle);
+      rotation = Math.floor((rotation % 360 + roundingAngle / 2) / roundingAngle) * roundingAngle;
+      let degree =  elObj.angle + rotation;
+      if (degree >= 360){
+        degree = degree - 360;
+      }
+      if (degree < 0){
+        degree = degree + 360;
+      }
+      let value = degree / roundingAngle;
+      if (value < 10 && value >= 0){
+        value = '0' + value;
+      }
+      if (clockHandHour.isDragging){
+        if (value == '00'){
+          value = 12;
+        }
+      }
+      elObj = update(elObj, {
+        value: {$set: value},
+        degree: {$set: degree},
+      });
+      this.setState({[refName]: elObj});
     }
-    else{
-      if (month == 12){
-        month = 1;
-        year = year + 1;
-      }
-      else{
-        month = month + 1;
-      }
-    }
-    pickedYearMonth = update(pickedYearMonth, {
-        month: {$set: month},
-        string: {$set: `${year}-${month}`},
-      }
-    );
-    this.setState({
-      pickedYearMonth,
-      direction,
-    });
-    this.props.onMonthPicked({year, month});
   }
 
-  pickDate (pickedDate) {
+  handleMouseUp(e){
     let {
-      pickedDateInfo,
-      pickedYearMonth,
+      clockHandSecond,
+      clockHandMinute,
+      clockHandHour,
     } = this.state;
-    pickedDateInfo = update(pickedDateInfo, {
-        year: {$set: pickedYearMonth.year},
-        month: {$set: pickedYearMonth.month},
-        date: {$set: pickedDate},
-      }
-    );
-    this.setState({pickedDateInfo});
-    this.props.onDatePicked(pickedDateInfo);
-  }
+    if (clockHandSecond.isDragging || clockHandMinute.isDragging || clockHandHour.isDragging){
+      let clockHandSecondDegree = this.state.clockHandSecond.degree;
+      let clockHandMinuteDegree = this.state.clockHandMinute.degree;
+      let clockHandHourDegree = this.state.clockHandHour.degree;
 
-  changeSelectorPanelYearSet (yearSelectorPanel, direction) {
-    let yearSelectorPanelList = getYearSet(yearSelectorPanel);
-    this.setState({yearSelectorPanel, yearSelectorPanelList, direction});
-  }
-
-  showSelectorPanel () {
-    let {
-      showSelectorPanel,
-      showMask,
-    } = this.state;
-    this.setState({showSelectorPanel: !showSelectorPanel, showMask: !showMask});
-  }
-
-  onMouseDown () {
-    this.mouseIsDownOnSelectorPanelClicker = true;
-  }
-
-  onMouseUp () {
-    this.mouseIsDownOnSelectorPanelClicker = false;
-  }
-
-  reset () {
-    let {
-      currentYearMonthDate,
-      pickedDateInfo,
-      pickedYearMonth,
-    } = this.state;
-    let {
-      year,
-      month,
-      date,
-    } = currentYearMonthDate;
-    let direction = NEXT_TRANSITION;
-    if (year < pickedYearMonth.year){
-      direction = PREV_TRANSITION;
+      clockHandSecond = update(clockHandSecond, { isDragging: {$set: false}, angle: {$set: clockHandSecondDegree} });
+      clockHandMinute = update(clockHandMinute, { isDragging: {$set: false}, angle: {$set: clockHandMinuteDegree} });
+      clockHandHour = update(clockHandHour, { isDragging: {$set: false}, angle: {$set: clockHandHourDegree} });
+      this.setState({ clockHandSecond, clockHandMinute, clockHandHour,});
     }
-    else if (year == pickedYearMonth.year){
-      if (month < pickedYearMonth.month){
-        direction = PREV_TRANSITION;
-      }
-    }
-    pickedDateInfo = update(pickedDateInfo, {
-        year: {$set: year},
-        month: {$set: month},
-        date: {$set: date},
-      }
-    );
-    pickedYearMonth = update(pickedYearMonth, {
-        year: {$set: year},
-        month: {$set: month},
-        string: {$set: `${year}-${month}`}
-      }
-    );
-    this.setState({
-      pickedYearMonth: pickedYearMonth,
-      pickedDateInfo: pickedDateInfo,
-      yearSelectorPanel: year,
-      direction: direction,
-    });
-    this.props.onReset(pickedDateInfo);
+  }
+
+  changeTime(){
+
   }
 
   render() {
@@ -227,279 +310,120 @@ class Calendar extends React.Component {
       locale,
     } = this.props;
     let {
-      pickedYear,
-      pickedMonth,
-      pickedDate,
-      dates,
       direction,
-      showSelectorPanel,
-      yearSelectorPanelList,
-      yearSelectorPanel,
-      currentYearMonthDate,
-      pickedDateInfo,
-      pickedYearMonth,
-      showMask,
+      clockHandSecond,
+      clockHandMinute,
+      clockHandHour,
     } = this.state;
-    let transitionContainerStyle;
-    let content;
-    let rowHtml;
-    if (dates.length){
-      let row = dates.length / WEEK_NUMBER;
-      let rowIndex = 1;
-      let rowObj = {};
-      dates.map((item, key) => {
-        if ( key < rowIndex * (WEEK_NUMBER)){
-          if (!rowObj[rowIndex]){
-            rowObj[rowIndex] = [];
-          }
-          rowObj[rowIndex].push(item);
-        }
-        else{
-          rowIndex = rowIndex + 1;
-          if (!rowObj[rowIndex]){
-            rowObj[rowIndex] = [];
-          }
-          rowObj[rowIndex].push(item);
-        }
-      });
-      content = (
-        <CalendarBody
-          size={size}
-          data={rowObj}
-          currentYearMonthDate={currentYearMonthDate}
-          pickedYearMonth={pickedYearMonth}
-          pickedDateInfo={pickedDateInfo}
-          onClick={this.pickDate.bind(this)}
-          key={pickedYearMonth.string}
-        />
-      );
-      if (row == 6){
-        let height = 385;
-        if (size == 'l'){
-          height = 500;
-        }
-        if (size == 's'){
-          height = 285;
-        }
-        transitionContainerStyle = {
-          height: `${height}px`
-        }
+
+    let secondStyle = {
+      transform: `translate(-1px, -34.5px) rotate(${clockHandSecond.degree}deg) translate(0px, -22.5px)`,
+      WebkitTransform: `translate(-1px, -34.5px) rotate(${clockHandSecond.degree}deg) translate(0px, -22.5px)`,
+      MozTransform: `translate(-1px, -34.5px) rotate(${clockHandSecond.degree}deg) translate(0px, -22.5px)`,
+      MsTransform: `translate(-1px, -34.5px) rotate(${clockHandSecond.degree}deg) translate(0px, -22.5px)`,
+      OTransform: `translate(-1px, -34.5px) rotate(${clockHandSecond.degree}deg) translate(0px, -22.5px)`,
+    };
+    let minuteStyle = {
+      transform: `translate(-1px, -32.5px) rotate(${clockHandMinute.degree}deg) translate(0px, -20.5px)`,
+      WebkitTransform: `translate(-1px, -32.5px) rotate(${clockHandMinute.degree}deg) translate(0px, -20.5px)`,
+      MozTransform: `translate(-1px, -32.5px) rotate(${clockHandMinute.degree}deg) translate(0px, -20.5px)`,
+      MsTransform: `translate(-1px, -32.5px) rotate(${clockHandMinute.degree}deg) translate(0px, -20.5px)`,
+      OTransform: `translate(-1px, -32.5px) rotate(${clockHandMinute.degree}deg) translate(0px, -20.5px)`,
+    };
+    let hourStyle = {
+      transform: `translate(-1.5px, -24.5px) rotate(${clockHandHour.degree}deg) translate(0px, -14.5px)`,
+      WebkitTransform: `translate(-1.5px, -24.5px) rotate(${clockHandHour.degree}deg) translate(0px, -14.5px)`,
+      MozTransform: `translate(-1.5px, -24.5px) rotate(${clockHandHour.degree}deg) translate(0px, -14.5px)`,
+      MsTransform: `translate(-1.5px, -24.5px) rotate(${clockHandHour.degree}deg) translate(0px, -14.5px)`,
+      OTransform: `translate(-1.5px, -24.5px) rotate(${clockHandHour.degree}deg) translate(0px, -14.5px)`,
+    };
+
+    let minutesItem = [];
+
+    for (let i = 0; i < 60; i++){
+      let isQuarter = false;
+      let isFive = false;
+      let translateFirst = `0px, -1px`;
+      let translateSecond = `0px, 82px`;
+      if (i == 0 || i == 15 || i == 30 || i == 45){
+        isQuarter = true;
+        translateFirst = `0px, -3px`;
+        translateSecond = `0px, 82px`;
       }
-    }
-    let captionHtml;
-    captionHtml = WEEK_NAME[locale].map((item, key) => {
-      return (
-        <div className={`${STYLE['picky-date-time__table-caption']} ${STYLE['picky-date-time__table-cel']} ${STYLE['no-border']} ${STYLE[size]}`} key={key}>{item}</div>
-      );
-    });
-    let selectorPanelClass = cx(
-      STYLE['picky-date-time-dropdown'],
-      STYLE['picky-date-time__selector-panel'],
-      showSelectorPanel && STYLE['visible'],
-    );
-    let selectorPanelMonthHtml = MONTH_NAME[locale].map((item, key) => {
-      let itemMonth = key + 1;
-      let monthItemClass = cx(
-        STYLE['picky-date-time-dropdown__month-item'],
-        itemMonth == pickedYearMonth.month && STYLE['active'],
-      );
-      let month = itemMonth - 1;
-      let direction = NEXT_TRANSITION;
-      if (itemMonth < pickedYearMonth.month){
-        direction = PREV_TRANSITION;
-        month = itemMonth + 1;
+      if (i % 5 == 0){
+        isFive = true;
       }
-      return (
-        <div className={monthItemClass} onClick={itemMonth !== pickedYearMonth.month ? this.pickMonth.bind(this, month, direction) : ``} key={key}>
-          <div className={STYLE[size]}>{item}</div>
-        </div>
+      let minutesItemClass = cx(
+        STYLE['picky-date-time-clock__clock-minute'],
+        isQuarter && STYLE['picky-date-time-clock__clock-minute--quarter'],
+        isFive && STYLE['picky-date-time-clock__clock-minute--five'],
       );
-    });
-    let selectorPanelYearHtml;
-    if (yearSelectorPanelList.length){
-      selectorPanelYearHtml = yearSelectorPanelList.map((item, key) => {
-        let yearItemClass = cx(
-          STYLE['picky-date-time-dropdown__year-item'],
-          item == pickedYearMonth.year && STYLE['active'],
-        );
-        let year = item - 1;
-        let direction = NEXT_TRANSITION;
-        if (item < pickedYearMonth.year){
-          direction = PREV_TRANSITION;
-          year = item + 1;
-        }
-        return(
-          <div className={yearItemClass} onClick={item !== pickedYearMonth.year ? this.pickYear.bind(this, year, direction) : ``} key={key}>
-            <div className={STYLE[size]}>{item}</div>
-          </div>
-        );
-      });
+      let degree = i * 6 + 180;
+      let minutesItemStyle = {
+        transform: `translate(${translateFirst}) rotate(${degree}deg) translate(${translateSecond})`,
+      };
+      minutesItem.push(
+        <div key={i} className={minutesItemClass} style={minutesItemStyle}></div>
+      );
     }
     return (
-      <div>
-        <div className={`${STYLE['picky-date-time__header']}`}>
-          <div className={`${STYLE['col']} ${STYLE['col-3']}`}>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__previous']}`} onClick={this.pickYear.bind(this, pickedYearMonth.year, PREV_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-first_page`}></span>
+      <div className={`${STYLE['picky-date-time-clock']}`}>
+        <div className={`${STYLE['picky-date-time-clock__circle']} ${STYLE[size]}`} ref={ref => this.clockCircle = ref}>
+          <div
+            className={`${STYLE['picky-date-time-clock__clock-hand']} ${STYLE['picky-date-time-clock__clock-hand--second']}`}
+            style={secondStyle}
+            onMouseOver={this.onMouseOver.bind(this, 'clockHandSecond')}
+            onMouseOut={this.onMouseOut.bind(this, 'clockHandSecond')}
+            onMouseDown={this.handleMouseDown.bind(this, 'clockHandSecond')}
+            ref={ref => this.clockHandSecond = ref}>
             </div>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__sub-previous']}`} onClick={this.pickMonth.bind(this, pickedYearMonth.month, PREV_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_left`}></span>
+          <div
+            className={`${STYLE['picky-date-time-clock__clock-hand']} ${STYLE['picky-date-time-clock__clock-hand--minute']}`}
+            style={minuteStyle}
+            onMouseOver={this.onMouseOver.bind(this, 'clockHandMinute')}
+            onMouseOut={this.onMouseOut.bind(this, 'clockHandMinute')}
+            onMouseDown={this.handleMouseDown.bind(this, 'clockHandMinute')}
+            ref={ref => this.clockHandMinute = ref}>
             </div>
-          </div>
-          <div className={`${STYLE['col']} ${STYLE['col-6']}`}>
-            <div className={`${selectorPanelClass}`} ref={ref => this.monthSelectorPanel = ref} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
-              <div className={`${STYLE['picky-date-time-dropdown__menu']}`}>
-                <div className={`${STYLE['picky-date-time-dropdown__month']}`}>
-                  {selectorPanelMonthHtml}
-                </div>
-                <div style={{'height':'10px'}}></div>
-                <span className={`${STYLE['picky-date-time__selector-panel-icon']} ${STYLE['picky-date-time__selector-panel-icon--left']} ${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_left`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}></span>
-                <ReactCSSTransitionGroup
-                  className="picky-date-time__selector-panel-year-set-container"
-                  transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
-                  transitionAppearTimeout={500}
-                  transitionEnterTimeout={300}
-                  transitionLeaveTimeout={300}
-                >
-                <div className={`${STYLE['picky-date-time-dropdown__year']}`} key={yearSelectorPanelList}>
-                  {selectorPanelYearHtml}
-                </div>
-                </ReactCSSTransitionGroup>
-                <span className={`${STYLE['picky-date-time__selector-panel-icon']} ${STYLE['picky-date-time__selector-panel-icon--right']} ${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_right`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
-              </div>
+          <div
+            className={`${STYLE['picky-date-time-clock__clock-hand']} ${STYLE['picky-date-time-clock__clock-hand--hour']}`}
+            style={hourStyle}
+            onMouseOver={this.onMouseOver.bind(this, 'clockHandHour')}
+            onMouseOut={this.onMouseOut.bind(this, 'clockHandHour')}
+            onMouseDown={this.handleMouseDown.bind(this, 'clockHandHour')}
+            ref={ref => this.clockHandHour = ref}>
             </div>
-            <ReactCSSTransitionGroup
-              className="picky-date-time__title-container"
-              transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
-              transitionAppearTimeout={500}
-              transitionEnterTimeout={300}
-              transitionLeaveTimeout={300}
-            >
-              <div className={`${STYLE['picky-date-time__title']}`} key={pickedYearMonth.string}>
-                <span className={`${STYLE['picky-date-time__clicker']}`} onClick={this.showSelectorPanel.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
-                  <span className={`${STYLE['picky-date-time__clicker']}`}>
-                    <span>{`${MONTH_NAME[locale][pickedYearMonth.month - 1]}`}</span>
-                  </span>
-                  <span>&nbsp;&nbsp;</span>
-                  <span className={`${STYLE['picky-date-time__clicker']}`}>
-                    <span>{`${pickedYearMonth.year}`}</span>
-                  </span>
-                </span>
-              </div>
-            </ReactCSSTransitionGroup>
-          </div>
-          <div className={`${STYLE['col']} ${STYLE['col-3']}`}>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__next']}`} onClick={this.pickMonth.bind(this, pickedYearMonth.month, NEXT_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_right`}></span>
-            </div>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__sub-next']}`} onClick={this.pickYear.bind(this, pickedYearMonth.year, NEXT_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-last_page`}></span>
-            </div>
-          </div>
+            {minutesItem}
+          <div className={`${STYLE['picky-date-time-clock__clock-center']}`} ref={ref => this.clockCenter = ref}></div>
         </div>
-        <div className={`${STYLE['picky-date-time__content']}`}>
-          <div className={`${STYLE['picky-date-time__table']}`}>
-            <div className={`${STYLE['picky-date-time__table-row']}`}>
-              {captionHtml}
-            </div>
-          </div>
-          <ReactCSSTransitionGroup
-            className={`picky-date-time__body-container ${size}`}
-            transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
-            transitionAppearTimeout={500}
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={300}
-            style={transitionContainerStyle}
-          >
-            {content}
-          </ReactCSSTransitionGroup>
+        <div>
+          <input
+            value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${clockHandHour.meridiem}`}
+            onFocus={this.onFocus.bind(this)}
+            onKeyDown={this.onKeyDown.bind(this)}
+            onChange={this.changeTime.bind(this)}
+            onClick={this.onClick.bind(this)}
+            onWheel={this.handleMouseWheel.bind(this)}
+            ref={ref => this.timeInput = ref}
+          />
         </div>
-        <div className={`${STYLE['picky-date-time__button']} ${STYLE['picky-date-time__today']}`} onClick={this.reset.bind(this)}>
-          <span className={`${STYLE['picky-date-time__inline-span']}`}>{LANG[locale]['reset']}</span>
-          <span className={`${STYLE['picky-date-time__inline-span']} ${STYLE['picky-date-time__icon']} picky-date-time-refresh`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
-        </div>
-        <div className={`${cx(STYLE['picky-date-time__mask'], showMask && STYLE['visible'])}`}></div>
       </div>
     );
   }
 }
 
-class CalendarBody extends React.Component {
-  render() {
-    let {
-      size,
-      data,
-      currentYearMonthDate,
-      pickedDateInfo,
-      pickedYearMonth,
-      onClick,
-    } = this.props;
-    let {
-      year,
-      month,
-      date,
-    } = currentYearMonthDate;
-    let pickedDateYear = pickedDateInfo.year;
-    let pickedDateMonth = pickedDateInfo.month;
-    let pickedDate = pickedDateInfo.date;
-    let pickedYear = pickedYearMonth.year;
-    let pickedMonth = pickedYearMonth.month;
-    let content = Object.keys(data).map((key) => {
-      let colHtml;
-      if (data[key].length){
-        colHtml = data[key].map((item, key) => {
-          let isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
-          let isDisabled = pickedMonth != item.month;
-          const datePickerItemClass = cx(
-            STYLE['picky-date-time__table-cel'],
-            STYLE['picky-date-time__date-item'],
-            STYLE[size],
-            isDisabled && STYLE['disabled'],
-            date == item.name && month == item.month && year == item.year && STYLE['today'],
-            isPicked && STYLE['active'],
-          );
-          return (
-            <div className={`${datePickerItemClass}`} key={key} onClick={!isDisabled ? this.props.onClick.bind(this, item.name) : ``}>
-              {item.name}
-              {isPicked ? <span className={`${STYLE['picky-date-time__icon']} picky-date-time-check`}></span> : ``}
-            </div>
-          );
-        });
-      }
-      return (
-        <div className={`${STYLE['picky-date-time__table-row']}`} key={key}>
-          {colHtml}
-        </div>
-      );
-    });
-    return(
-      <div className={`${STYLE['picky-date-time__table']} slide`}>
-        {content}
-      </div>
-    );
-  }
-}
-
-CalendarBody.propTypes = {
-  onClick: PropTypes.func,
-}
-
-CalendarBody.defaultProps = {
-  onClick: () => {},
-}
-
-Calendar.propTypes = {
+Clock.propTypes = {
   size: PropTypes.string,
   locale: PropTypes.string,
 };
 
-Calendar.defaultProps = {
+Clock.defaultProps = {
   size: 'm',
   locale: 'en-US',
-  onYearPicked: () => {},
-  onMonthPicked: () => {},
-  onDatePicked: () => {},
+  onSecondChange: () => {},
+  onMinuteChange: () => {},
+  onHourChange: () => {},
   onReset: () => {},
 }
 
-export default Calendar;
+export default Clock;

@@ -286,18 +286,18 @@ class Calendar extends React.Component {
     let captionHtml;
     captionHtml = WEEK_NAME[locale].map((item, key) => {
       return (
-        <div className={`${STYLE['picky-date-time__table-caption']} ${STYLE['picky-date-time__table-cel']} ${STYLE['no-border']} ${STYLE[size]}`} key={key}>{item}</div>
+        <div className={`${STYLE['picky-date-time-calendar__table-caption']} ${STYLE['picky-date-time-calendar__table-cel']} ${STYLE['no-border']} ${STYLE[size]}`} key={key}>{item}</div>
       );
     });
     let selectorPanelClass = cx(
       STYLE['picky-date-time-dropdown'],
-      STYLE['picky-date-time__selector-panel'],
+      STYLE['picky-date-time-calendar__selector-panel'],
       showSelectorPanel && STYLE['visible'],
     );
     let selectorPanelMonthHtml = MONTH_NAME[locale].map((item, key) => {
       let itemMonth = key + 1;
       let monthItemClass = cx(
-        STYLE['picky-date-time-dropdown__month-item'],
+        STYLE['picky-date-time-dropdown-calendar__month-item'],
         itemMonth == pickedYearMonth.month && STYLE['active'],
       );
       let month = itemMonth - 1;
@@ -316,7 +316,7 @@ class Calendar extends React.Component {
     if (yearSelectorPanelList.length){
       selectorPanelYearHtml = yearSelectorPanelList.map((item, key) => {
         let yearItemClass = cx(
-          STYLE['picky-date-time-dropdown__year-item'],
+          STYLE['picky-date-time-dropdown-calendar__year-item'],
           item == pickedYearMonth.year && STYLE['active'],
         );
         let year = item - 1;
@@ -333,52 +333,52 @@ class Calendar extends React.Component {
       });
     }
     return (
-      <div>
-        <div className={`${STYLE['picky-date-time__header']}`}>
+      <div className={`${STYLE['picky-date-time-calendar']}`}>
+        <div className={`${STYLE['picky-date-time-calendar__header']}`}>
           <div className={`${STYLE['col']} ${STYLE['col-3']}`}>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__previous']}`} onClick={this.pickYear.bind(this, pickedYearMonth.year, PREV_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-first_page`}></span>
+            <div className={`${STYLE['col']} ${STYLE['picky-date-time-calendar__previous']}`} onClick={this.pickYear.bind(this, pickedYearMonth.year, PREV_TRANSITION)}>
+              <span className={`${STYLE['picky-date-time-calendar__icon']} picky-date-time-first_page`}></span>
             </div>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__sub-previous']}`} onClick={this.pickMonth.bind(this, pickedYearMonth.month, PREV_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_left`}></span>
+            <div className={`${STYLE['col']} ${STYLE['picky-date-time-calendar__sub-previous']}`} onClick={this.pickMonth.bind(this, pickedYearMonth.month, PREV_TRANSITION)}>
+              <span className={`${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_left`}></span>
             </div>
           </div>
           <div className={`${STYLE['col']} ${STYLE['col-6']}`}>
             <div className={`${selectorPanelClass}`} ref={ref => this.monthSelectorPanel = ref} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
-              <div className={`${STYLE['picky-date-time-dropdown__menu']} ${STYLE[size]}`}>
-                <div className={`${STYLE['picky-date-time-dropdown__month']}`}>
+              <div className={`${STYLE['picky-date-time-dropdown-calendar__menu']} ${STYLE[size]}`}>
+                <div className={`${STYLE['picky-date-time-dropdown-calendar__month']}`}>
                   {selectorPanelMonthHtml}
                 </div>
                 <div style={{'height':'10px'}}></div>
-                <span className={`${STYLE['picky-date-time__selector-panel-icon']} ${STYLE['picky-date-time__selector-panel-icon--left']} ${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_left`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}></span>
+                <span className={`${STYLE['picky-date-time-calendar__selector-panel-icon']} ${STYLE['picky-date-time-calendar__selector-panel-icon--left']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_left`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel - SELECTOR_YEAR_SET_NUMBER, PREV_TRANSITION)}></span>
                 <ReactCSSTransitionGroup
-                  className="picky-date-time__selector-panel-year-set-container"
+                  className="picky-date-time-calendar__selector-panel-year-set-container"
                   transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
                   transitionAppearTimeout={500}
                   transitionEnterTimeout={300}
                   transitionLeaveTimeout={300}
                 >
-                <div className={`${STYLE['picky-date-time-dropdown__year']}`} key={yearSelectorPanelList}>
+                <div className={`${STYLE['picky-date-time-dropdown-calendar__year']}`} key={yearSelectorPanelList}>
                   {selectorPanelYearHtml}
                 </div>
                 </ReactCSSTransitionGroup>
-                <span className={`${STYLE['picky-date-time__selector-panel-icon']} ${STYLE['picky-date-time__selector-panel-icon--right']} ${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_right`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
+                <span className={`${STYLE['picky-date-time-calendar__selector-panel-icon']} ${STYLE['picky-date-time-calendar__selector-panel-icon--right']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_right`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
               </div>
             </div>
             <ReactCSSTransitionGroup
-              className="picky-date-time__title-container"
+              className="picky-date-time-calendar__title-container"
               transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
               transitionAppearTimeout={500}
               transitionEnterTimeout={300}
               transitionLeaveTimeout={300}
             >
-              <div className={`${STYLE['picky-date-time__title']}`} key={pickedYearMonth.string}>
-                <span className={`${STYLE['picky-date-time__clicker']}`} onClick={this.showSelectorPanel.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
-                  <span className={`${STYLE['picky-date-time__clicker']}`}>
+              <div className={`${STYLE['picky-date-time-calendar__title']}`} key={pickedYearMonth.string}>
+                <span className={`${STYLE['picky-date-time-calendar__clicker']}`} onClick={this.showSelectorPanel.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
+                  <span className={`${STYLE['picky-date-time-calendar__clicker']}`}>
                     <span>{`${MONTH_NAME[locale][pickedYearMonth.month - 1]}`}</span>
                   </span>
                   <span>&nbsp;&nbsp;</span>
-                  <span className={`${STYLE['picky-date-time__clicker']}`}>
+                  <span className={`${STYLE['picky-date-time-calendar__clicker']}`}>
                     <span>{`${pickedYearMonth.year}`}</span>
                   </span>
                 </span>
@@ -386,22 +386,22 @@ class Calendar extends React.Component {
             </ReactCSSTransitionGroup>
           </div>
           <div className={`${STYLE['col']} ${STYLE['col-3']}`}>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__next']}`} onClick={this.pickMonth.bind(this, pickedYearMonth.month, NEXT_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-keyboard_arrow_right`}></span>
+            <div className={`${STYLE['col']} ${STYLE['picky-date-time-calendar__next']}`} onClick={this.pickMonth.bind(this, pickedYearMonth.month, NEXT_TRANSITION)}>
+              <span className={`${STYLE['picky-date-time-calendar__icon']} picky-date-time-keyboard_arrow_right`}></span>
             </div>
-            <div className={`${STYLE['col']} ${STYLE['picky-date-time__sub-next']}`} onClick={this.pickYear.bind(this, pickedYearMonth.year, NEXT_TRANSITION)}>
-              <span className={`${STYLE['picky-date-time__icon']} picky-date-time-last_page`}></span>
+            <div className={`${STYLE['col']} ${STYLE['picky-date-time-calendar__sub-next']}`} onClick={this.pickYear.bind(this, pickedYearMonth.year, NEXT_TRANSITION)}>
+              <span className={`${STYLE['picky-date-time-calendar__icon']} picky-date-time-last_page`}></span>
             </div>
           </div>
         </div>
-        <div className={`${STYLE['picky-date-time__content']}`}>
-          <div className={`${STYLE['picky-date-time__table']}`}>
-            <div className={`${STYLE['picky-date-time__table-row']}`}>
+        <div className={`${STYLE['picky-date-time-calendar__content']}`}>
+          <div className={`${STYLE['picky-date-time-calendar__table']}`}>
+            <div className={`${STYLE['picky-date-time-calendar__table-row']}`}>
               {captionHtml}
             </div>
           </div>
           <ReactCSSTransitionGroup
-            className={`picky-date-time__body-container ${size}`}
+            className={`picky-date-time-calendar__body-container ${size}`}
             transitionName={direction == NEXT_TRANSITION ? 'forward' : 'backward'}
             transitionAppearTimeout={500}
             transitionEnterTimeout={300}
@@ -411,11 +411,11 @@ class Calendar extends React.Component {
             {content}
           </ReactCSSTransitionGroup>
         </div>
-        <div className={`${STYLE['picky-date-time__button']} ${STYLE['picky-date-time__today']}`} onClick={this.reset.bind(this)}>
-          <span className={`${STYLE['picky-date-time__inline-span']}`}>{LANG[locale]['reset']}</span>
-          <span className={`${STYLE['picky-date-time__inline-span']} ${STYLE['picky-date-time__icon']} picky-date-time-refresh`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
+        <div className={`${STYLE['picky-date-time-calendar__button']} ${STYLE['picky-date-time-calendar__today']}`} onClick={this.reset.bind(this)}>
+          <span className={`${STYLE['picky-date-time-calendar__inline-span']}`}>{LANG[locale]['reset']}</span>
+          <span className={`${STYLE['picky-date-time-calendar__inline-span']} ${STYLE['picky-date-time-calendar__icon']} picky-date-time-refresh`} onClick={this.changeSelectorPanelYearSet.bind(this, yearSelectorPanel + SELECTOR_YEAR_SET_NUMBER, NEXT_TRANSITION)}></span>
         </div>
-        <div className={`${cx(STYLE['picky-date-time__mask'], showMask && STYLE['visible'])}`}></div>
+        <div className={`${cx(STYLE['picky-date-time-calendar__mask'], showMask && STYLE['visible'])}`}></div>
       </div>
     );
   }
@@ -448,8 +448,8 @@ class CalendarBody extends React.Component {
           let isPicked = pickedDate == item.name && pickedDateMonth == item.month && pickedDateYear == item.year;
           let isDisabled = pickedMonth != item.month;
           const datePickerItemClass = cx(
-            STYLE['picky-date-time__table-cel'],
-            STYLE['picky-date-time__date-item'],
+            STYLE['picky-date-time-calendar__table-cel'],
+            STYLE['picky-date-time-calendar__date-item'],
             STYLE[size],
             isDisabled && STYLE['disabled'],
             date == item.name && month == item.month && year == item.year && STYLE['today'],
@@ -458,19 +458,19 @@ class CalendarBody extends React.Component {
           return (
             <div className={`${datePickerItemClass}`} key={key} onClick={!isDisabled ? this.props.onClick.bind(this, item.name) : ``}>
               {item.name}
-              {isPicked ? <span className={`${STYLE['picky-date-time__icon']} picky-date-time-check`}></span> : ``}
+              {isPicked ? <span className={`${STYLE['picky-date-time-calendar__icon']} picky-date-time-check`}></span> : ``}
             </div>
           );
         });
       }
       return (
-        <div className={`${STYLE['picky-date-time__table-row']}`} key={key}>
+        <div className={`${STYLE['picky-date-time-calendar__table-row']}`} key={key}>
           {colHtml}
         </div>
       );
     });
     return(
-      <div className={`${STYLE['picky-date-time__table']} slide`}>
+      <div className={`${STYLE['picky-date-time-calendar__table']} slide`}>
         {content}
       </div>
     );

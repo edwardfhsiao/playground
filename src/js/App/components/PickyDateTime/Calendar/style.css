@@ -14,17 +14,19 @@
 
 /* dropdown section */
 
-.picky-date-time__selector-panel {}
+.picky-date-time-calendar {}
+
+.picky-date-time-calendar__selector-panel {}
 
 .picky-date-time-dropdown {
   position: relative;
 }
 
-.picky-date-time-dropdown__menu-no-effect {
+.picky-date-time-dropdown-calendar__menu-no-effect {
   display: none;
 }
 
-.picky-date-time-dropdown.visible .picky-date-time-dropdown__menu {
+.picky-date-time-dropdown.visible .picky-date-time-dropdown-calendar__menu {
   transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1);
   transform: translate(-50%, 0) scale(1, 1)\9;
   opacity: 1;
@@ -32,11 +34,11 @@
   z-index: 1000;
 }
 
-.picky-date-time-dropdown.visible .picky-date-time-dropdown__menu-no-effect {
+.picky-date-time-dropdown.visible .picky-date-time-dropdown-calendar__menu-no-effect {
   display: block;
 }
 
-.picky-date-time-dropdown .picky-date-time-dropdown__menu {
+.picky-date-time-dropdown .picky-date-time-dropdown-calendar__menu {
   will-change: transform, opacity;
   transform: translate3d(-50%, 0, 0) scale3d(1, 0, 1);
   transform: translate(-50%, 0) scale(1, 0)\9;
@@ -58,13 +60,13 @@
   background: var(--oc-white);
 }
 
-.picky-date-time-dropdown .picky-date-time-dropdown__container {
+.picky-date-time-dropdown .picky-date-time-dropdown-calendar__container {
   border-radius: 3px;
   overflow: hidden;
   margin-top: 10px;
 }
 
-.picky-date-time-dropdown .picky-date-time-dropdown__item {
+.picky-date-time-dropdown .picky-date-time-dropdown-calendar__item {
   padding: 1px 4px;
   line-height: 20px;
   transition: background .4s;
@@ -72,20 +74,20 @@
   display: block;
 }
 
-.picky-date-time-dropdown__month {
+.picky-date-time-dropdown-calendar__month {
   background: var(--oc-white);
   lost-utility: clearfix;
   lost-center: 100%;
 }
 
-.picky-date-time-dropdown__month-item {
+.picky-date-time-dropdown-calendar__month-item {
   lost-waffle: 1/4 0 0;
   background: var(--oc-white);
   cursor: pointer;
   float: left;
 }
 
-.picky-date-time-dropdown__month-item>div {
+.picky-date-time-dropdown-calendar__month-item>div {
   &.s {
     font-size: 12px;
     padding: 10px 2px;
@@ -105,16 +107,16 @@
   }
 }
 
-.picky-date-time-dropdown__month-item.active>div {
+.picky-date-time-dropdown-calendar__month-item.active>div {
   background: var(--oc-blue-5);
   color: var(--oc-white);
 }
 
-.picky-date-time-dropdown .picky-date-time-dropdown__item:hover {
+.picky-date-time-dropdown .picky-date-time-dropdown-calendar__item:hover {
   background: #eee;
 }
 
-.picky-date-time-dropdown__year {
+.picky-date-time-dropdown-calendar__year {
   position: absolute;
   overflow: hidden;
   width: 100%;
@@ -123,14 +125,14 @@
   lost-center: 100%;
 }
 
-.picky-date-time-dropdown__year-item {
+.picky-date-time-dropdown-calendar__year-item {
   lost-column: 1/5 0 0;
   background: var(--oc-white);
   cursor: pointer;
   float: left;
 }
 
-.picky-date-time-dropdown__year-item>div {
+.picky-date-time-dropdown-calendar__year-item>div {
   &.s {
     font-size: 12px;
     padding: 10px 2px;
@@ -146,38 +148,38 @@
   }
 }
 
-.picky-date-time-dropdown__year-item.active>div {
+.picky-date-time-dropdown-calendar__year-item.active>div {
   background: var(--oc-blue-5);
   color: var(--oc-white);
 }
 
-.picky-date-time__selector-panel-icon {
+.picky-date-time-calendar__selector-panel-icon {
   position: absolute;
   bottom: 15px;
   z-index: 10;
 }
 
-.picky-date-time__selector-panel-icon--left {
+.picky-date-time-calendar__selector-panel-icon--left {
   left: 5px;
 }
 
-.picky-date-time__selector-panel-icon--right {
+.picky-date-time-calendar__selector-panel-icon--right {
   right: 5px;
 }
 
 
 /* end of dropdown section */
 
-.picky-date-time__today {
+.picky-date-time-calendar__today {
   font-size: 12px;
   margin-top: 10px;
 }
 
-.picky-date-time__today .picky-date-time__icon {
+.picky-date-time-calendar__today .picky-date-time-calendar__icon {
   font-size: 15px;
 }
 
-.picky-date-time__clicker {
+.picky-date-time-calendar__clicker {
   cursor: pointer;
 }
 
@@ -192,27 +194,32 @@
   vertical-align: middle;
 }
 
-.picky-date-time__title {
+.picky-date-time-calendar__title {
   cursor: pointer;
   width: 100%;
   position: absolute;
+  color: var(--oc-gray-8);
+  transition: color .3s;
+  &:hover {
+    color: var(--oc-blue-3);
+  }
 }
 
-.picky-date-time__inline-span span {
+.picky-date-time-calendar__inline-span span {
   display: inline-block;
   vertical-align: middle;
 }
 
-.picky-date-time__inline-span:before {
+.picky-date-time-calendar__inline-span:before {
   content: '';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
 }
 
-.picky-date-time__content {}
+.picky-date-time-calendar__content {}
 
-.picky-date-time__icon {
+.picky-date-time-calendar__icon {
   font-size: 20px;
 }
 
@@ -224,7 +231,7 @@
   width: 50%;
 }
 
-.picky-date-time__header {
+.picky-date-time-calendar__header {
   text-align: center;
 }
 
@@ -233,17 +240,17 @@
   vertical-align: middle;
 }
 
-.picky-date-time__table {
+.picky-date-time-calendar__table {
   display: table;
   border-collapse: collapse;
   margin: 0 auto;
 }
 
-.picky-date-time__table-row {
+.picky-date-time-calendar__table-row {
   display: table-row;
 }
 
-.picky-date-time__table-cel {
+.picky-date-time-calendar__table-cel {
   font-size: 12px;
   display: table-cell;
   text-align: center;
@@ -289,7 +296,7 @@
   &.no-border {
     border: 1px solid transparent;
   }
-  &.picky-date-time__date-item {
+  &.picky-date-time-calendar__date-item {
     position: relative;
     &:not(.disabled) {
       cursor: pointer;
@@ -299,7 +306,7 @@
       }
     }
   }
-  &.picky-date-time__date-item .picky-date-time__icon {
+  &.picky-date-time-calendar__date-item .picky-date-time-calendar__icon {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -307,11 +314,11 @@
   }
 }
 
-.picky-date-time__table-caption {
+.picky-date-time-calendar__table-caption {
   color: var(--oc-gray-7);
 }
 
-.picky-date-time__mask {
+.picky-date-time-calendar__mask {
   opacity: 0;
   filter: alpha(opacity=0);
   position: absolute;
@@ -329,7 +336,7 @@
   }
 }
 
-.picky-date-time__button {
+.picky-date-time-calendar__button {
   display: inline-block;
   color: var(--oc-gray-6);
   cursor: pointer;

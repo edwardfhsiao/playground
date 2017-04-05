@@ -34,15 +34,15 @@
   &.backwardLeaveActive {}
 }
 
-:global .picky-date-time__title-container {
+:global .picky-date-time-calendar__title-container {
   position: relative;
   display: block;
-  height: 16px;
+  height: 18px;
   overflow: hidden;
   text-align: center;
 }
 
-:global .picky-date-time__selector-panel-year-set-container {
+:global .picky-date-time-calendar__selector-panel-year-set-container {
   position: relative;
   display: block;
   height: 34px;
@@ -52,7 +52,7 @@
   margin: 0 auto;
 }
 
-:global .picky-date-time__body-container {
+:global .picky-date-time-calendar__body-container {
   position: relative;
   display: block;
   transition: height .3s;
