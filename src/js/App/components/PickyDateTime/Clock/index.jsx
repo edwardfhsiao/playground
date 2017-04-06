@@ -22,6 +22,15 @@ const SECOND_DEGREE_NUMBER = 6;
 const MINUTE_DEGREE_NUMBER = 6;
 const HOUR_DEGREE_NUMBER = 30;
 
+const QUARTER = [0, 15, 30, 45];
+
+const TIME_SELECTION_FIRST_CHAR_POS_LIST = [0, 3, 6];
+const TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST = [1, 4, 7];
+const TIME_SELECTION_SECOND_CHAR_POS_LIST = [1, 4, 7];
+const TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST = [2, 5, 8];
+const TIME_JUMP_CHAR_POS_LIST = TIME_SELECTION_SECOND_CHAR_POS_LIST;
+const TIME_CURSOR_POSITION_LIST = [];
+
 const getTodayObj = function () {
   let today = new Date();
   let year = today.getFullYear();
@@ -45,6 +54,12 @@ const getTodayObj = function () {
   return { year, month, date, hour, minute, second, meridiem, hourText, }
 }
 
+const getInputCharSkipNum = function (pos) {
+  let num = 1;
+  if (TIME_JUMP_CHAR_POS_LIST.indexOf(pos) != -1){ num = 2; }
+  return num;
+}
+
 class Clock extends React.Component {
   constructor(props) {
     super(props)
@@ -56,12 +71,14 @@ class Clock extends React.Component {
     let secondDegree = second * SECOND_DEGREE_NUMBER;
     let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
     let hourDegree = hour * HOUR_DEGREE_NUMBER;
-    let clockHandObj = {value: '', degree: '', isMouseOver: '', isDragging: '', startAngle: '', angle: '', meridiem: '', isMouseOver: false, isDragging: false,};
+    let clockHandObj = {value: '', degree: '', isMouseOver: '', isDragging: '', startAngle: '', angle: '', isMouseOver: false, isDragging: false,};
 
     this.state = {
-      clockHandSecond: this.updateClockHandObj(clockHandObj, second, secondDegree, secondDegree, secondDegree, meridiem),
-      clockHandMinute: this.updateClockHandObj(clockHandObj, minute, minuteDegree, minuteDegree, minuteDegree, meridiem),
-      clockHandHour: this.updateClockHandObj(clockHandObj, hourText, hourDegree, hourDegree, hourDegree, meridiem),
+      clockHandSecond: this.updateClockHandObj(clockHandObj, second, secondDegree, secondDegree, secondDegree),
+      clockHandMinute: this.updateClockHandObj(clockHandObj, minute, minuteDegree, minuteDegree, minuteDegree),
+      clockHandHour: this.updateClockHandObj(clockHandObj, hourText, hourDegree, hourDegree, hourDegree),
+      meridiem,
+      slectionRange: {start: 0, end: 0},
     };
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -85,6 +102,15 @@ class Clock extends React.Component {
     this.initializeClock();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.slectionRange != this.state.slectionRange){
+      // debugger;
+      this.timeInput.focus();
+      this.timeInput.setSelectionRange(this.state.slectionRange.start, this.state.slectionRange.end);
+      // setTimeout(() => {this.timeInput.setSelectionRange(this.state.slectionRange.start, this.state.slectionRange.end);}, 0);
+    }
+  }
+
   componentWillUnmount() {
     if (document.removeEventListener) {
       document.removeEventListener('mousemove', this.handleMouseMove, true);
@@ -95,8 +121,8 @@ class Clock extends React.Component {
     }
   }
 
-  updateClockHandObj (o, value, degree, startAngle, angle, meridiem, isMouseOver = false, isDragging = false){
-    o = update(o, {value: {$set: value}, degree: {$set: degree}, startAngle: {$set: startAngle}, angle: {$set: angle}, meridiem: {$set: meridiem}, isMouseOver: {$set: isMouseOver}, isDragging: {$set: isDragging}});
+  updateClockHandObj (o, value, degree, startAngle, angle, isMouseOver = false, isDragging = false){
+    o = update(o, {value: {$set: value}, degree: {$set: degree}, startAngle: {$set: startAngle}, angle: {$set: angle}, isMouseOver: {$set: isMouseOver}, isDragging: {$set: isDragging}});
     return o;
   }
 
@@ -111,13 +137,14 @@ class Clock extends React.Component {
       return;
     }
     let todayObj = getTodayObj();
-    let { hour, minute, second, meridiem, hourText,} = todayObj;
+    let { hour, minute, second, hourText,} = todayObj;
+
     let secondDegree = second * SECOND_DEGREE_NUMBER;
     let minuteDegree = minute * MINUTE_DEGREE_NUMBER;
     let hourDegree = hour * HOUR_DEGREE_NUMBER;
-    clockHandSecond = this.updateClockHandObj(clockHandSecond, second, secondDegree, secondDegree, secondDegree, meridiem);
-    clockHandMinute = this.updateClockHandObj(clockHandMinute, hourText, minuteDegree, minuteDegree, minuteDegree, meridiem);
-    clockHandHour = this.updateClockHandObj(clockHandHour, hourText, hourDegree, hourDegree, hourDegree, meridiem);
+    clockHandSecond = this.updateClockHandObj(clockHandSecond, second, secondDegree, secondDegree, secondDegree,);
+    clockHandMinute = this.updateClockHandObj(clockHandMinute, minute, minuteDegree, minuteDegree, minuteDegree,);
+    clockHandHour = this.updateClockHandObj(clockHandHour, hourText, hourDegree, hourDegree, hourDegree,);
     this.setState({ clockHandSecond, clockHandMinute, clockHandHour,});
   }
 
@@ -141,51 +168,170 @@ class Clock extends React.Component {
 
   onKeyDown(e) {
     let { key } = e;
+
     let el = this.timeInput;
-    let range = {
-      start: el.selectionStart,
-      end: el.selectionEnd,
-    };
-    let elObj;
-    let refName;
-    let meridiem = 'AM';
-    debugger;
-    if (range.start >= 0 && range.end <= 2){
-      refName = 'clockHandHour';
-      elObj = this.state.clockHandHour;
-    }
-    else if (range.start >= 3 && range.end <= 5){
-      refName = 'clockHandMinute';
-      elObj = this.state.clockHandMinute;
-    }
-    else if (range.start >= 6 && range.end <= 8){
-      refName = 'clockHandSecond';
-      elObj = this.state.clockHandSecond;
-    }
-    else if (range.start >= 9){
-      refName = 'clockHandHour';
-      elObj = this.state.clockHandHour;
-      if (elObj.meridiem == 'AM'){
-        meridiem = 'PM';
+    let pos = { start: el.selectionStart,  end: el.selectionEnd, };
+    let range = { start: 0, end: 0 };
+    let elObj, refName;
+
+    let o = {};
+    let type = ['clockHandHour', 'clockHandMinute', 'clockHandSecond', 'meridiem'];
+
+    if (pos.start == pos.end){
+      if (pos.start <= 2){//hh
+        o['clockHandHour'] = true;
+        range.start = 0; range.end = 2;
       }
-      elObj = update(elObj, {meridiem: {$set: meridiem},});
-      this.setState({[refName]: elObj})
-      return;
+      else if (pos.start <= 5){//:mm
+        o['clockHandMinute'] = true;
+        range.start = 3; range.end = 5;
+      }
+      else if (pos.start <= 8){//:ss
+        o['clockHandSecond'] = true;
+        range.start = 6; range.end = 8;
+      }
+      else if (pos.start <= 11){// AM
+        o['meridiem'] = true;
+        range.start = 9; range.end = 11;
+      }
     }
-    // let value = el.value;
-    // let selectedValue = parseInt(value.substring(range.start, range.end));
+    else{
+      if (pos.start < 2){//hh
+        o['clockHandHour'] = true;
+        range.start = 0; range.end = 2;
+      }
+      else if (pos.start < 5){//:mm
+        o['clockHandMinute'] = true;
+        range.start = 3; range.end = 5;
+      }
+      else if (pos.start < 8){//:ss
+        o['clockHandSecond'] = true;
+        range.start = 6; range.end = 8;
+      }
+      else if (pos.start < 11){//: AM
+        o['meridiem'] = true;
+        range.start = 9; range.end = 11;
+      }
+    }
+
+    type.map((i, k) => {
+      if (typeof o[i] != 'undefined' && o[i]){
+        refName = i;
+        elObj = this.state[refName];
+      }
+    });
+
     let newValue;
+    // debugger;
     if (key == 'ArrowUp' || key == 'ArrowDown') {
+      let val = parseInt(elObj.value);
       if (key == 'ArrowUp'){
-        newValue = parseInt(elObj.value) + 1;
+        if (refName == 'clockHandMinute' || refName == 'clockHandSecond'){
+          if (val == 59){
+            newValue = 0;
+          }
+          else{
+            newValue = val + 1;
+          }
+        }
+        else if (refName == 'clockHandHour'){
+          if (val == 12){
+            newValue = 1;
+          }
+          else{
+            newValue = val + 1;
+          }
+        }
       }
       else if (key == 'ArrowDown'){
-        newValue = parseInt(elObj.value) - 1;
+        if (refName == 'clockHandMinute' || refName == 'clockHandSecond'){
+          if (val == 0){
+            newValue = 59;
+          }
+          else{
+            newValue = val - 1;
+          }
+        }
+        else if (refName == 'clockHandHour'){
+          if (val == 1){
+            newValue = 12;
+          }
+          else{
+            newValue = val - 1;
+          }
+        }
       }
-      if (newValue < 10){
-        newValue = '0' + newValue;
+    }
+    else if (!isNaN(parseInt(key)) || key == 'Backspace' || key == 'Delete'){
+      let number = parseInt(key), start, end;
+      let skipNum = getInputCharSkipNum(pos.start);
+
+      if (key == 'Backspace'){
+        skipNum = -skipNum;
+        number = 0;
+        start = pos.start + skipNum;
+        end = pos.start + skipNum;
+        if (!elObj.value){
+          this.setState({slectionRange: {start: start, end: end}});
+          e.preventDefault();
+          return;
+        }
       }
-      // value = value.replace(selectedValue, newValue);
+      if (key == 'Delete'){
+        number = 0;
+      }
+      if (elObj.value){
+        newValue = number;
+        let strValue = (elObj.value).toString();
+        if (pos.start == pos.end){
+          if (skipNum > 0) {
+            if (TIME_SELECTION_FIRST_CHAR_POS_LIST.indexOf(pos.start) != -1){// 0*
+              newValue = parseInt(number + strValue.substr(strValue.length - 1));
+            }
+            else if (TIME_SELECTION_SECOND_CHAR_POS_LIST.indexOf(pos.start) != -1){// *0
+              newValue = parseInt(strValue.substr(0, 1) + number);
+            }
+          }
+          else{
+            if (TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST.indexOf(pos.start) != -1){// 0*
+              newValue = parseInt(number + strValue.substr(strValue.length - 1));
+            }
+            else if (TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST.indexOf(pos.start) != -1){// *0
+              newValue = parseInt(strValue.substr(0, 1) + number);
+            }
+          }
+          range.start = range.end = pos.start + skipNum;
+        }
+        else{
+          if (TIME_SELECTION_FIRST_CHAR_POS_LIST.indexOf(pos.start) != -1){
+            if (pos.end < pos.start){
+              newValue = parseInt(strValue.substr(0, 1) + number);
+              range.start = range.end = pos.start;
+            }
+            else{
+              newValue = parseInt(number + strValue.substr(strValue.length - 1));
+              range.start = range.end = pos.start + skipNum;
+            }
+          }
+        }
+        if ((refName == 'clockHandHour') && (newValue == 0 || newValue > 12)){
+          newValue = 12;
+        }
+        else{
+          if (newValue > 60){
+            newValue = key;
+            range.start = range.end = pos.start + skipNum;
+          }
+        }
+      }
+    }
+
+    if (newValue < 10){
+      newValue = '0' + newValue;
+    }
+    let slectionRange = {start: range.start, end: range.end};
+
+    if (typeof newValue != 'undefined' && refName != 'meridiem'){
       let newDegree;
       if (refName == 'clockHandSecond'){
         newDegree = parseInt(newValue) * SECOND_DEGREE_NUMBER;
@@ -202,9 +348,22 @@ class Clock extends React.Component {
         startAngle: {$set: newDegree},
         angle: {$set: newDegree},
       });
-      this.setState({[refName]: elObj})
-      el.setSelectionRange(range.start, range.end);
-      e.stopPropagation();
+      this.setState({[refName]: elObj, slectionRange});
+    }
+
+    if (key == 'ArrowUp' || key == 'ArrowDown'){
+      if (refName == 'meridiem'){
+        let meridiem = 'AM';
+        if (elObj == 'AM'){
+          meridiem = 'PM';
+        }
+        elObj = meridiem;
+        this.setState({[refName]: elObj, slectionRange});
+      }
+    }
+
+    if (!(key == 'ArrowLeft' || key == 'ArrowRight')){
+      e.preventDefault();
     }
   }
 
@@ -305,16 +464,8 @@ class Clock extends React.Component {
   }
 
   render() {
-    let{
-      size,
-      locale,
-    } = this.props;
-    let {
-      direction,
-      clockHandSecond,
-      clockHandMinute,
-      clockHandHour,
-    } = this.state;
+    let{ size, locale, } = this.props;
+    let { direction, clockHandSecond, clockHandMinute, clockHandHour, meridiem, } = this.state;
 
     let secondStyle = {
       transform: `translate(-1px, -34.5px) rotate(${clockHandSecond.degree}deg) translate(0px, -22.5px)`,
@@ -345,7 +496,7 @@ class Clock extends React.Component {
       let isFive = false;
       let translateFirst = `0px, -1px`;
       let translateSecond = `0px, 82px`;
-      if (i == 0 || i == 15 || i == 30 || i == 45){
+      if (QUARTER.indexOf(i) != -1){
         isQuarter = true;
         translateFirst = `0px, -3px`;
         translateSecond = `0px, 82px`;
@@ -398,7 +549,7 @@ class Clock extends React.Component {
         </div>
         <div>
           <input
-            value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${clockHandHour.meridiem}`}
+            value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
             onFocus={this.onFocus.bind(this)}
             onKeyDown={this.onKeyDown.bind(this)}
             onChange={this.changeTime.bind(this)}
