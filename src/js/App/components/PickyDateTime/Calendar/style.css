@@ -337,6 +337,9 @@
 }
 
 .picky-date-time-calendar__button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
   display: inline-block;
   color: var(--oc-gray-6);
   cursor: pointer;

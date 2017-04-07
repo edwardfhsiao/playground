@@ -17,6 +17,7 @@
 .picky-date-time__clock {
   display: inline-block;
   vertical-align: top;
+  margin-bottom: 40px;
   &:before {
     content: '';
     display: inline-block;

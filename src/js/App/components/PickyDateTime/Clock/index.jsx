@@ -12,24 +12,28 @@ import {
   getDaysArray,
   getDaysListByMonth,
   getYearSet,
+  R2D,
+  SECOND_DEGREE_NUMBER,
+  MINUTE_DEGREE_NUMBER,
+  HOUR_DEGREE_NUMBER,
+  QUARTER,
+  TIME_SELECTION_FIRST_CHAR_POS_LIST,
+  TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST,
+  TIME_SELECTION_SECOND_CHAR_POS_LIST,
+  TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST,
+  TIME_JUMP_CHAR_POS_LIST,
+  TIME_CURSOR_POSITION_OBJECT,
+  TIME_TYPE,
+  KEY_CODE,
 } from 'COMPONENTS/PickyDateTime/constValue';
 
 const emptyFn = () => {}
 
-const R2D = 180 / Math.PI;
-
-const SECOND_DEGREE_NUMBER = 6;
-const MINUTE_DEGREE_NUMBER = 6;
-const HOUR_DEGREE_NUMBER = 30;
-
-const QUARTER = [0, 15, 30, 45];
-
-const TIME_SELECTION_FIRST_CHAR_POS_LIST = [0, 3, 6];
-const TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST = [1, 4, 7];
-const TIME_SELECTION_SECOND_CHAR_POS_LIST = [1, 4, 7];
-const TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST = [2, 5, 8];
-const TIME_JUMP_CHAR_POS_LIST = TIME_SELECTION_SECOND_CHAR_POS_LIST;
-const TIME_CURSOR_POSITION_LIST = [];
+const formatClockNumber = (value) => {
+  value = parseInt(value);
+  if (value < 10 && value >= 0){ return value = '0' + value; }
+  return value;
+}
 
 const getTodayObj = function () {
   let today = new Date();
@@ -40,17 +44,14 @@ const getTodayObj = function () {
   let hour = today.getHours()
   let minute = today.getMinutes();
   let second = today.getSeconds();
-  if (second < 10){
-    second = '0' + second;
-  }
-  if (minute < 10){
-    minute = '0' + minute;
-  }
+
   let meridiem = parseInt(hour) < 12 ? 'AM' : 'PM';
   let hourText = hour > 12 ? hour - 12 : hour;
-  if (hourText < 10){
-    hourText = '0' + hourText;
-  }
+
+  second = formatClockNumber(second);
+  minute = formatClockNumber(minute);
+  hourText = formatClockNumber(hourText);
+
   return { year, month, date, hour, minute, second, meridiem, hourText, }
 }
 
@@ -104,10 +105,8 @@ class Clock extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.slectionRange != this.state.slectionRange){
-      // debugger;
       this.timeInput.focus();
       this.timeInput.setSelectionRange(this.state.slectionRange.start, this.state.slectionRange.end);
-      // setTimeout(() => {this.timeInput.setSelectionRange(this.state.slectionRange.start, this.state.slectionRange.end);}, 0);
     }
   }
 
@@ -158,7 +157,7 @@ class Clock extends React.Component {
 
   handleMouseWheel(e){
     this.onKeyDown({
-      key: e.deltaY > 0 ? 'ArrowUp' : 'ArrowDown',
+      keyCode: e.deltaY > 0 ? '38' : '40',
       type: event.type || 'unknown',
       stopPropagation: typeof event.stopPropagation == 'function' ? () => event.stopPropagation(): emptyFn,
       preventDefault: typeof event.preventDefault == 'function' ? () => event.preventDefault(): emptyFn
@@ -167,54 +166,24 @@ class Clock extends React.Component {
   }
 
   onKeyDown(e) {
-    let { key } = e;
-
+    let { keyCode } = e;
     let el = this.timeInput;
     let pos = { start: el.selectionStart,  end: el.selectionEnd, };
+    let key = KEY_CODE[keyCode];
+
+    if (typeof key == 'undefined'){ this.setState({slectionRange: pos}); return; }
+
     let range = { start: 0, end: 0 };
     let elObj, refName;
 
     let o = {};
-    let type = ['clockHandHour', 'clockHandMinute', 'clockHandSecond', 'meridiem'];
-
-    if (pos.start == pos.end){
-      if (pos.start <= 2){//hh
-        o['clockHandHour'] = true;
-        range.start = 0; range.end = 2;
-      }
-      else if (pos.start <= 5){//:mm
-        o['clockHandMinute'] = true;
-        range.start = 3; range.end = 5;
-      }
-      else if (pos.start <= 8){//:ss
-        o['clockHandSecond'] = true;
-        range.start = 6; range.end = 8;
-      }
-      else if (pos.start <= 11){// AM
-        o['meridiem'] = true;
-        range.start = 9; range.end = 11;
-      }
-    }
-    else{
-      if (pos.start < 2){//hh
-        o['clockHandHour'] = true;
-        range.start = 0; range.end = 2;
-      }
-      else if (pos.start < 5){//:mm
-        o['clockHandMinute'] = true;
-        range.start = 3; range.end = 5;
-      }
-      else if (pos.start < 8){//:ss
-        o['clockHandSecond'] = true;
-        range.start = 6; range.end = 8;
-      }
-      else if (pos.start < 11){//: AM
-        o['meridiem'] = true;
-        range.start = 9; range.end = 11;
-      }
+    if (TIME_CURSOR_POSITION_OBJECT[pos.start]){
+      o[TIME_CURSOR_POSITION_OBJECT[pos.start]] = true;
+      range.start = pos.start == pos.end ? pos.start - 2 : pos.start;
+      range.end = pos.start;
     }
 
-    type.map((i, k) => {
+    TIME_TYPE.map((i, k) => {
       if (typeof o[i] != 'undefined' && o[i]){
         refName = i;
         elObj = this.state[refName];
@@ -222,46 +191,24 @@ class Clock extends React.Component {
     });
 
     let newValue;
-    // debugger;
+
     if (key == 'ArrowUp' || key == 'ArrowDown') {
+      range.start = pos.start;
+      range.end = pos.start != pos.end ? pos.start + 2 : pos.start;
       let val = parseInt(elObj.value);
-      if (key == 'ArrowUp'){
-        if (refName == 'clockHandMinute' || refName == 'clockHandSecond'){
-          if (val == 59){
-            newValue = 0;
-          }
-          else{
-            newValue = val + 1;
-          }
-        }
-        else if (refName == 'clockHandHour'){
-          if (val == 12){
-            newValue = 1;
-          }
-          else{
-            newValue = val + 1;
-          }
-        }
+      let diff = 1;
+      if (key == 'ArrowDown'){ diff = -diff; }
+      newValue = val + diff;
+      if (refName == 'clockHandMinute' || refName == 'clockHandSecond'){
+        if (newValue == 60){ newValue = 0; }
+        if (newValue == -1){ newValue = 59; }
       }
-      else if (key == 'ArrowDown'){
-        if (refName == 'clockHandMinute' || refName == 'clockHandSecond'){
-          if (val == 0){
-            newValue = 59;
-          }
-          else{
-            newValue = val - 1;
-          }
-        }
-        else if (refName == 'clockHandHour'){
-          if (val == 1){
-            newValue = 12;
-          }
-          else{
-            newValue = val - 1;
-          }
-        }
+      else if (refName == 'clockHandHour'){
+        if (newValue == 13){ newValue = 1; }
+        if (newValue == -1){ newValue = 11; }
       }
     }
+
     else if (!isNaN(parseInt(key)) || key == 'Backspace' || key == 'Delete'){
       let number = parseInt(key), start, end;
       let skipNum = getInputCharSkipNum(pos.start);
@@ -326,9 +273,8 @@ class Clock extends React.Component {
       }
     }
 
-    if (newValue < 10){
-      newValue = '0' + newValue;
-    }
+    newValue = formatClockNumber(newValue);
+
     let slectionRange = {start: range.start, end: range.end};
 
     if (typeof newValue != 'undefined' && refName != 'meridiem'){
@@ -381,7 +327,6 @@ class Clock extends React.Component {
 
   handleMouseDown(refName, e){
     let elObj = this.state[refName];
-
     let x = e.clientX - this.originX;
     let y = e.clientY - this.originY;
     let startAngle = R2D * Math.atan2(y, x);
@@ -418,20 +363,12 @@ class Clock extends React.Component {
       let rotation = parseInt(d - elObj.startAngle);
       rotation = Math.floor((rotation % 360 + roundingAngle / 2) / roundingAngle) * roundingAngle;
       let degree =  elObj.angle + rotation;
-      if (degree >= 360){
-        degree = degree - 360;
-      }
-      if (degree < 0){
-        degree = degree + 360;
-      }
+      if (degree >= 360){ degree = degree - 360; }
+      if (degree < 0){ degree = degree + 360; }
       let value = degree / roundingAngle;
-      if (value < 10 && value >= 0){
-        value = '0' + value;
-      }
+      value = formatClockNumber(value);
       if (clockHandHour.isDragging){
-        if (value == '00'){
-          value = 12;
-        }
+        if (value == '00'){ value = 12; }
       }
       elObj = update(elObj, {
         value: {$set: value},
@@ -459,8 +396,12 @@ class Clock extends React.Component {
     }
   }
 
-  changeTime(){
+  changeTime(e) {
+    e.stopPropagation();
+  }
 
+  reset() {
+    this.initializeClock();
   }
 
   render() {
@@ -547,7 +488,7 @@ class Clock extends React.Component {
             {minutesItem}
           <div className={`${STYLE['picky-date-time-clock__clock-center']}`} ref={ref => this.clockCenter = ref}></div>
         </div>
-        <div>
+        <div className={`${STYLE['picky-date-time-clock__inputer']}`}>
           <input
             value={`${clockHandHour.value}:${clockHandMinute.value}:${clockHandSecond.value} ${meridiem}`}
             onFocus={this.onFocus.bind(this)}
@@ -557,6 +498,10 @@ class Clock extends React.Component {
             onWheel={this.handleMouseWheel.bind(this)}
             ref={ref => this.timeInput = ref}
           />
+        </div>
+        <div className={`${STYLE['picky-date-time-clock__button']} ${STYLE['picky-date-time-clock__today']}`} onClick={this.reset.bind(this)}>
+          <span className={`${STYLE['picky-date-time-clock__inline-span']}`}>{LANG[locale]['reset']}</span>
+          <span className={`${STYLE['picky-date-time-clock__inline-span']} ${STYLE['picky-date-time-clock__icon']} picky-date-time-refresh`}></span>
         </div>
       </div>
     );

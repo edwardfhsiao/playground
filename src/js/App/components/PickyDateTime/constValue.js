@@ -1,23 +1,12 @@
-const PREV_TRANSITION = 'prev';
-const NEXT_TRANSITION = 'next';
-
-const SELECTOR_YEAR_SET_NUMBER = 5;
+// GENERAL
 
 const SIZE_RANGE = ['l', 'm', 's', 'xs'];
+
 const LOCALE_RANGE = ['en-us', 'zh-cn'];
 
 const DEFAULT_LACALE = 'en-us';
+
 const DEFAULT_SIZE = 'm';
-
-const WEEK_NAME = {
-  'en-us': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  'zh-cn': ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-}
-
-const MONTH_NAME = {
-  'en-us': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  'zh-cn': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-}
 
 const LANG = {
   'en-us': {
@@ -30,6 +19,23 @@ const LANG = {
     'reset': '重置',
     'clear': '清零',
   },
+}
+
+// CALENDAR
+
+const PREV_TRANSITION = 'prev';
+const NEXT_TRANSITION = 'next';
+
+const SELECTOR_YEAR_SET_NUMBER = 5;
+
+const WEEK_NAME = {
+  'en-us': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  'zh-cn': ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+}
+
+const MONTH_NAME = {
+  'en-us': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  'zh-cn': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
 }
 
 const POINTER_ROTATE = 0;
@@ -87,7 +93,7 @@ const getDaysArray = (year, month, locale = 'zh-cn') => {
   return res;
 }
 
-const getDaysListByMonth = (year, month, names, locale = 'zh-cn') => {
+const getDaysListByMonth = (year, month) => {
   const date = new Date(year, month - 1, 1);
   let res = [];
   while (date.getMonth() == month - 1) {
@@ -106,7 +112,6 @@ const getDaysListByMonth = (year, month, names, locale = 'zh-cn') => {
 
 const getYearSet = (year) => {
   let res = [];
-  let prevYears = [];
   let itemNumber;
   let startOffset;
   let endOffset;
@@ -131,20 +136,86 @@ const getYearSet = (year) => {
   return res;
 }
 
+// CLOCK
+
+const R2D = 180 / Math.PI;
+
+const SECOND_DEGREE_NUMBER = 6;
+const MINUTE_DEGREE_NUMBER = 6;
+const HOUR_DEGREE_NUMBER = 30;
+
+const QUARTER = [0, 15, 30, 45];
+
+const TIME_SELECTION_FIRST_CHAR_POS_LIST = [0, 3, 6];
+const TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST = [1, 4, 7];
+const TIME_SELECTION_SECOND_CHAR_POS_LIST = [1, 4, 7];
+const TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST = [2, 5, 8];
+const TIME_JUMP_CHAR_POS_LIST = [1, 4, 7];
+const TIME_CURSOR_POSITION_OBJECT = {
+  0: 'clockHandHour',
+  1: 'clockHandHour',
+  2: 'clockHandHour',
+  3: 'clockHandMinute',
+  4: 'clockHandMinute',
+  5: 'clockHandMinute',
+  6: 'clockHandSecond',
+  7: 'clockHandSecond',
+  8: 'clockHandSecond',
+  9: 'meridiem',
+  10: 'meridiem',
+  11: 'meridiem',
+};
+const TIME_TYPE = ['clockHandHour', 'clockHandMinute', 'clockHandSecond', 'meridiem'];
+
+let KEY_CODE = {
+  '8': 'Backspace',
+  '46': 'Delete',
+  '38': 'ArrowUp',
+  '37': 'ArrowLeft',
+  '39': 'ArrowRight',
+  '40': 'ArrowDown',
+  '48': '0',
+  '49': '1',
+  '50': '2',
+  '51': '3',
+  '52': '4',
+  '53': '5',
+  '54': '6',
+  '55': '7',
+  '56': '8',
+  '57': '9',
+}
+
 export {
+  // GENERAL
+  LANG,
+  SIZE_RANGE,
+  LOCALE_RANGE,
+  DEFAULT_LACALE,
+  DEFAULT_SIZE,
+  // CALENDAR
   PREV_TRANSITION,
   NEXT_TRANSITION,
   SELECTOR_YEAR_SET_NUMBER,
   WEEK_NAME,
   MONTH_NAME,
-  LANG,
   WEEK_NUMBER,
   POINTER_ROTATE,
-  SIZE_RANGE,
-  LOCALE_RANGE,
-  DEFAULT_LACALE,
-  DEFAULT_SIZE,
   getDaysArray,
   getDaysListByMonth,
   getYearSet,
+  // CLOCK
+  R2D,
+  SECOND_DEGREE_NUMBER,
+  MINUTE_DEGREE_NUMBER,
+  HOUR_DEGREE_NUMBER,
+  QUARTER,
+  TIME_SELECTION_FIRST_CHAR_POS_LIST,
+  TIME_SELECTION_FIRST_CHAR_POS_BACKSPACE_LIST,
+  TIME_SELECTION_SECOND_CHAR_POS_LIST,
+  TIME_SELECTION_SECOND_CHAR_POS_BACKSPACE_LIST,
+  TIME_JUMP_CHAR_POS_LIST,
+  TIME_CURSOR_POSITION_OBJECT,
+  TIME_TYPE,
+  KEY_CODE,
 }

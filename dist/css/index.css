@@ -1066,6 +1066,9 @@ z-index: 1 !important;
 }
 
 .style__picky-date-time-calendar__button___2NjMh {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
   display: inline-block;
   color: #868e96;
   cursor: pointer;
@@ -1286,155 +1289,155 @@ color: #ffffff;
 }
 
 .picky-date-time-schedule:before {
-  content: "\E8B5";
+  content: "\E8B5"!important;
 }
 
 .picky-date-time-control_point:before {
-  content: "\E3BA";
+  content: "\E3BA"!important;
 }
 
 .picky-date-time-arrow_back:before {
-  content: "\E5C4";
+  content: "\E5C4"!important;
 }
 
 .picky-date-time-arrow_downward:before {
-  content: "\E5DB";
+  content: "\E5DB"!important;
 }
 
 .picky-date-time-arrow_forward:before {
-  content: "\E5C8";
+  content: "\E5C8"!important;
 }
 
 .picky-date-time-arrow_upward:before {
-  content: "\E5D8";
+  content: "\E5D8"!important;
 }
 
 .picky-date-time-block:before {
-  content: "\E14B";
+  content: "\E14B"!important;
 }
 
 .picky-date-time-border_color:before {
-  content: "\E22B";
+  content: "\E22B"!important;
 }
 
 .picky-date-time-cached:before {
-  content: "\E86A";
+  content: "\E86A"!important;
 }
 
 .picky-date-time-call_made:before {
-  content: "\E0B2";
+  content: "\E0B2"!important;
 }
 
 .picky-date-time-call_received:before {
-  content: "\E0B5";
+  content: "\E0B5"!important;
 }
 
 .picky-date-time-check:before {
-  content: "\E5CA";
+  content: "\E5CA"!important;
 }
 
 .picky-date-time-navigate_before:before {
-  content: "\E408";
+  content: "\E408"!important;
 }
 
 .picky-date-time-navigate_next:before {
-  content: "\E409";
+  content: "\E409"!important;
 }
 
 .picky-date-time-done:before {
-  content: "\E876";
+  content: "\E876"!important;
 }
 
 .picky-date-time-error:before {
-  content: "\E000";
+  content: "\E000"!important;
 }
 
 .picky-date-time-expand_less:before {
-  content: "\E5CE";
+  content: "\E5CE"!important;
 }
 
 .picky-date-time-expand_more:before {
-  content: "\E5CF";
+  content: "\E5CF"!important;
 }
 
 .picky-date-time-sms_failed:before {
-  content: "\E626";
+  content: "\E626"!important;
 }
 
 .picky-date-time-first_page:before {
-  content: "\E5DC";
+  content: "\E5DC"!important;
 }
 
 .picky-date-time-highlight_off:before {
-  content: "\E888";
+  content: "\E888"!important;
 }
 
 .picky-date-time-info_outline:before {
-  content: "\E88F";
+  content: "\E88F"!important;
 }
 
 .picky-date-time-input:before {
-  content: "\E890";
+  content: "\E890"!important;
 }
 
 .picky-date-time-keyboard_arrow_down:before {
-  content: "\E313";
+  content: "\E313"!important;
 }
 
 .picky-date-time-keyboard_arrow_left:before {
-  content: "\E314";
+  content: "\E314"!important;
 }
 
 .picky-date-time-keyboard_arrow_right:before {
-  content: "\E315";
+  content: "\E315"!important;
 }
 
 .picky-date-time-keyboard_arrow_up:before {
-  content: "\E316";
+  content: "\E316"!important;
 }
 
 .picky-date-time-last_page:before {
-  content: "\E5DD";
+  content: "\E5DD"!important;
 }
 
 .picky-date-time-open_in_new:before {
-  content: "\E89E";
+  content: "\E89E"!important;
 }
 
 .picky-date-time-priority_high:before {
-  content: "\E645";
+  content: "\E645"!important;
 }
 
 .picky-date-time-refresh:before {
-  content: "\E5D5";
+  content: "\E5D5"!important;
 }
 
 .picky-date-time-remove_circle_outline:before {
-  content: "\E15D";
+  content: "\E15D"!important;
 }
 
 .picky-date-time-replay:before {
-  content: "\E042";
+  content: "\E042"!important;
 }
 
 .picky-date-time-timer:before {
-  content: "\E425";
+  content: "\E425"!important;
 }
 
 .picky-date-time-update:before {
-  content: "\E923";
+  content: "\E923"!important;
 }
 
 .picky-date-time-vertical_align_bottom:before {
-  content: "\E258";
+  content: "\E258"!important;
 }
 
 .picky-date-time-vertical_align_top:before {
-  content: "\E25A";
+  content: "\E25A"!important;
 }
 
 .picky-date-time-watch_later:before {
-  content: "\E924";
+  content: "\E924"!important;
 }
 
 /*
@@ -1507,6 +1510,15 @@ color: #ffffff;
 
 .style__picky-date-time-clock__header___SmYcx {}
 
+.style__picky-date-time-clock__inputer___3X8pV {
+  text-align: center;
+  margin-top: 38px;
+}
+
+.style__picky-date-time-clock__inputer___3X8pV input {
+  padding: 5px 10px;
+}
+
 .style__picky-date-time-clock__circle___3i8U3 {
   position: relative;
   border: 1px solid #adb5bd;
@@ -1517,25 +1529,25 @@ color: #ffffff;
 
 .style__picky-date-time-clock__circle___3i8U3.style__l___21faL {
 width: 60px;
-height: 60px
+height: 60px;
 
 }
 
 .style__picky-date-time-clock__circle___3i8U3.style__m____qxBW {
 width: 40px;
-height: 40px
+height: 40px;
 
 }
 
 .style__picky-date-time-clock__circle___3i8U3.style__s___2h0Ua {
 width: 25px;
-height: 25px
+height: 25px;
 
 }
 
 .style__picky-date-time-clock__circle___3i8U3.style__xs___1V0Ky {
 width: 180px;
-height: 180px
+height: 180px;
 
 }
 
@@ -1557,7 +1569,7 @@ height: 180px
 .style__picky-date-time-clock__clock-minute--five___Zn7eZ.style__picky-date-time-clock__clock-minute--quarter___2eD30 {
 height: 6px;
 background: #343a40;
-width: 1px
+width: 1px;
 
 }
 
@@ -1610,6 +1622,52 @@ width: 1px
   background: #495057;
   z-index: 1;
   cursor: move;
+}
+
+.style__picky-date-time-clock__today___2kNt3 {
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+.style__picky-date-time-clock__inline-span___1_3Pf span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.style__picky-date-time-clock__inline-span___1_3Pf:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.style__picky-date-time-clock__today___2kNt3 .style__picky-date-time-clock__icon___1l_n4 {
+  font-size: 15px;
+}
+
+.style__picky-date-time-clock__icon___1l_n4 {
+  font-size: 20px;
+}
+
+.style__picky-date-time-clock__button___2EdI0 {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: inline-block;
+  color: #868e96;
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid #ced4da;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  background: #ffffff
+}
+
+.style__picky-date-time-clock__button___2EdI0:hover {
+border: 1px solid #4dadf7;
+background: #4dadf7;
+color: #ffffff;
+
 }
 /*
  *
@@ -1699,7 +1757,8 @@ opacity: 1;
 .index__picky-date-time__calendar___2gxeq,
 .index__picky-date-time__clock___10mxT {
   display: inline-block;
-  vertical-align: top
+  vertical-align: top;
+  margin-bottom: 40px
 }
 
 .index__picky-date-time__calendar___2gxeq:before, .index__picky-date-time__clock___10mxT:before {
