@@ -16,7 +16,11 @@
 
 .timetable__time-item {
   padding: 0 10px;
-  height: 50px;
+  height: 30px;
+}
+
+.dp-tbl-row{
+  background: #000;
 }
 
 .my-grid {

@@ -15,9 +15,12 @@ import styles from './styles/index.css';
 import Shake from 'shake.js';
 import 'fullpage.js/dist/jquery.fullpage.js';
 import 'fullpage.js/dist/jquery.fullpage.min.css';
-import ReactGridLayout from 'react-grid-layout';
+// import ReactGridLayout from 'react-grid-layout';
+import ReactGridLayout, {Responsive, WidthProvider} from 'react-grid-layout';
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import _ from 'lodash';
 import * as d3 from 'd3';
  let myShakeEvent = new Shake({
     threshold: 5, // optional shake strength threshold
@@ -86,7 +89,7 @@ const getTimeList = function(range, offset = 1, end = 60) {
 
 // const timeList = getTimeTextList(HOUR_RANGE_12);
 // const timeList = getTimeTextList(HOUR_RANGE_12, 15);
-// const timeList = getTimeTextList(HOUR_RANGE_24, 15);
+const timeList = getTimeTextList(HOUR_RANGE_24, 30);
 
 class Index extends Component {
 
@@ -98,7 +101,9 @@ class Index extends Component {
       phone: '',
       days: '',
       showPickyDateTime: false,
-      gridItem: ['a', 'b', 'c'],
+      eventInstanceList: [],
+      lastModifiedEventInstanceIndex: -1,
+      newCounter: 0,
     };
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPhoneKeyDown = this.onPhoneKeyDown.bind(this);
@@ -113,10 +118,35 @@ class Index extends Component {
   }
 
   componentDidMount() {
+    this.timetable.addEventListener('dblclick', this.createNewEventInstance.bind(this), false);
     // this.initFullpage();
     // this.initD3();
-    this.initInteract();
     // $('.intros').alertWhileClick('a');
+  }
+
+  createNewEventInstance(e) {
+    let {
+      clientX,
+      clientY,
+    } = e;
+
+    let {
+      newCounter,
+      eventInstanceList,
+      lastModifiedEventInstanceIndex,
+    } = this.state;
+    // debugger;
+    newCounter = newCounter + 1;
+    console.log(eventInstanceList);
+    const i = 'n' + newCounter;
+    const x = lastModifiedEventInstanceIndex != -1 ? eventInstanceList[lastModifiedEventInstanceIndex].x : 0;
+    const y = lastModifiedEventInstanceIndex != -1 ? eventInstanceList[lastModifiedEventInstanceIndex].y : 0;
+    const w = lastModifiedEventInstanceIndex != -1 ? eventInstanceList[lastModifiedEventInstanceIndex].w : 3;
+    const h = lastModifiedEventInstanceIndex != -1 ? eventInstanceList[lastModifiedEventInstanceIndex].h : 3;
+    let isDraggable, isResizable, maxH, maxW, minH, minW, moved = false, staticVal = false;
+    const newEventInstance = {i: i, x: x, y: y + 2, w: w, h: h, isDraggable: isDraggable, isResizable: isResizable, maxH: maxH, maxW: maxW, minH: minH, minW: minW, moved: moved, static: staticVal};
+    eventInstanceList.push(newEventInstance);
+    this.setState({newCounter, eventInstanceList});
   }
 
   onYearPicked(yearInfo) {
@@ -165,148 +195,6 @@ class Index extends Component {
 
   onClose() {
     this.setState({showPickyDateTime: false});
-  }
-
-  initInteract() {
-    // let itemClass = styles['resize-drag'];
-    // let dropzoneClass = styles['dropzone'];
-    // console.log(interact(`.${styles['resize-drag']}`));
-
-
-    function dragMoveListener (event) {
-      var target = event.target,
-          // keep the dragged position in the data-x/data-y attributes
-          x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-          y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-      // translate the element
-      target.style.webkitTransform =
-      target.style.transform =
-        'translate(' + x + 'px, ' + y + 'px)';
-
-      // update the posiion attributes
-      target.setAttribute('data-x', x);
-      target.setAttribute('data-y', y);
-    }
-
-    function resizemove (event) {
-      // debugger;
-      var target = event.target,
-          x = (parseFloat(target.getAttribute('data-x')) || 0),
-          y = (parseFloat(target.getAttribute('data-y')) || 0);
-      console.log(`original width: ${target.style.width}`);
-      console.log(`original height: ${target.style.height}`);
-      // console.log(`original deltaRect left: ${event.deltaRect.left}`);
-      // console.log(`original deltaRect top: ${event.deltaRect.top}`);
-
-      if (event.edges.top && !event.edges.right && !event.edges.bottom && !event.edges.left){
-        target.style.height = event.rect.height + 'px';
-        y += event.deltaRect.top;
-      }
-
-      if (event.edges.right && !event.edges.bottom && !event.edges.left && !event.edges.top){
-        target.style.width  = event.rect.width + 'px';
-        x += event.deltaRect.left;
-      }
-
-      if (event.edges.bottom && !event.edges.left && !event.edges.top && !event.edges.right){
-        target.style.height = event.rect.height + 'px';
-        y += event.deltaRect.top;
-      }
-
-      if (event.edges.left && !event.edges.top && !event.edges.right && !event.edges.bottom){
-        target.style.width  = event.rect.width + 'px';
-        x += event.deltaRect.left;
-      }
-
-      if (event.edges.top && event.edges.right || event.edges.right && event.edges.bottom || event.edges.bottom && event.edges.left || event.edges.left && event.edges.top){
-        target.style.height = event.rect.height + 'px';
-        y += event.deltaRect.top;
-        target.style.width  = event.rect.width + 'px';
-        x += event.deltaRect.left;
-      }
-
-      // update the element's style
-      // target.style.width  = event.rect.width + 'px';
-      // target.style.height = event.rect.height + 'px';
-
-      // translate when resizing from top or left edges
-      // x += event.deltaRect.left;
-      // y += event.deltaRect.top;
-      console.log(`after width: ${target.style.width}`);
-      console.log(`after height: ${target.style.height}`);
-      // console.log(`after deltaRect left: ${x}`);
-      // console.log(`after deltaRect top: ${y}`);
-      target.style.webkitTransform = target.style.transform =
-          'translate(' + x + 'px,' + y + 'px)';
-
-      target.setAttribute('data-x', x);
-      target.setAttribute('data-y', y);
-      target.textContent = Math.round(event.rect.width) + '×' + Math.round(event.rect.height);
-    }
-
-
-    interact(`.${styles['resize-drag']}`)
-    .draggable({
-      onmove: dragMoveListener,
-      snap: {
-        targets: [
-          interact.createSnapGrid({ x: 30, y: 30 })
-        ],
-        range: Infinity,
-        relativePoints: [ { x: 0, y: 0 } ]
-      },
-    })
-    .resizable({
-      preserveAspectRatio: true,
-      edges: { left: true, right: true, bottom: true, top: true },
-      snap: {
-        targets: [
-          interact.createSnapGrid({ x: 30, y: 30 })
-        ],
-        range: Infinity,
-        relativePoints: [ { x: 0, y: 0 } ]
-      },
-    })
-    .on('resizemove', resizemove);
-
-
-    interact(`.${styles['dropzone']}`).dropzone({
-      // only accept elements matching this CSS selector
-      accept: `.${styles['resize-drag']}`,
-      // Require a 75% element overlap for a drop to be possible
-      overlap: 0.75,
-
-      // listen for drop related events:
-
-      ondropactivate: function (event) {
-        // add active dropzone feedback
-        event.target.classList.add(styles['drop-active']);
-      },
-      ondragenter: function (event) {
-        var draggableElement = event.relatedTarget,
-            dropzoneElement = event.target;
-
-        // feedback the possibility of a drop
-        dropzoneElement.classList.add(styles['drop-target']);
-        draggableElement.classList.add(styles['can-drop']);
-        draggableElement.textContent = 'Dragged in';
-      },
-      ondragleave: function (event) {
-        // remove the drop feedback style
-        event.target.classList.remove(styles['drop-target']);
-        event.relatedTarget.classList.remove(styles['can-drop']);
-        event.relatedTarget.textContent = 'Dragged out';
-      },
-      ondrop: function (event) {
-        event.relatedTarget.textContent = 'Dropped';
-      },
-      ondropdeactivate: function (event) {
-        // remove active dropzone feedback
-        event.target.classList.remove(styles['drop-active']);
-        event.target.classList.remove(styles['drop-target']);
-      }
-    });
   }
 
   initFullpage(){
@@ -397,6 +285,91 @@ onTimeChange() {
 
 }
 
+onRemoveItem() {
+
+}
+
+onLayoutChange(list) {
+  let eventInstanceList = [];
+  list.map((o) => {
+    const {i, x, y, w, h} = o;
+    eventInstanceList.push({i, x, y, w, h});
+  });
+  this.setState({eventInstanceList});
+}
+
+onDragStart(items, item){
+  // debugger;
+}
+
+onDrag(items, item){
+  // debugger;
+}
+
+onDragStop(items, item){
+  // debugger;
+  let {
+    eventInstanceList,
+    lastModifiedEventInstanceIndex,
+  } = this.state;
+  let index = -1;
+  eventInstanceList.map((o, k) => {
+    if (o.i == item.i){
+      index = k;
+    }
+  });
+  if (index != -1){
+    lastModifiedEventInstanceIndex = index;
+    eventInstanceList[lastModifiedEventInstanceIndex] = item;
+  }
+  this.setState({eventInstanceList, lastModifiedEventInstanceIndex});
+}
+
+onResizeStart(items, item){
+  // debugger;
+}
+
+onResize(items, item){
+  // debugger;
+}
+
+onResizeStop(items, item){
+  // debugger;
+  let {
+    eventInstanceList,
+    lastModifiedEventInstanceIndex,
+  } = this.state;
+  let index = -1;
+  eventInstanceList.map((o, k) => {
+    if (o.i == item.i){
+      index = k;
+    }
+  });
+  if (index != -1){
+    lastModifiedEventInstanceIndex = index;
+    eventInstanceList[lastModifiedEventInstanceIndex] = item;
+  }
+  this.setState({eventInstanceList, lastModifiedEventInstanceIndex});
+}
+
+createElement(el) {
+  var removeStyle = {
+    position: 'absolute',
+    right: '2px',
+    top: 0,
+    cursor: 'pointer'
+  };
+  var i = el.add ? '+' : el.i;
+  return (
+    <div key={i} data-grid={el} className={`${styles['grid-item']}`}>
+      {el.add ?
+        <span className="add text" onClick={this.onAddItem} title="You can add an item by clicking here, too.">Add +</span>
+      : <span className="text">{i}</span>}
+      <span className="remove" style={removeStyle} onClick={this.onRemoveItem.bind(this, i)}>x</span>
+    </div>
+  );
+}
+
   render() {
 
     const resizeDragClass = cx(
@@ -412,7 +385,7 @@ onTimeChange() {
       phone,
       days,
       showPickyDateTime,
-      gridItem,
+      eventInstanceList,
     } = this.state;
     // let styles = {};
     // console.log(styles);
@@ -440,17 +413,17 @@ onTimeChange() {
     );
     let option = [{value: 'Monday', text: '周一'}, {value: 'Tuesday', text: '周二'}];
 
-    var layout = [
-      {i: 'a', x: 0, y: 0, w: 1, h: 2, static: false},
-      {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
-      {i: 'c', x: 4, y: 0, w: 1, h: 2}
-    ];
 
-    let gridItemHtml = gridItem.map((i, k) => {
-      return (
-        <div key={i} className={`${styles['grid-item']}`}>{i}</div>
-      );
-    });
+
+
+    let eventInstanceListHtml;
+    if (eventInstanceList.length){
+      eventInstanceListHtml = eventInstanceList.map((i, k) => {
+        return (
+          <div key={i.i} className={`${styles['grid-item']}`}>{i.i}</div>
+        );
+      });
+    }
 
     let timeColunmListHtml = timeList.map((i, k) => {
       return (
@@ -471,111 +444,35 @@ onTimeChange() {
             <div onClick={this.openPickyDateTime.bind(this)}>dd</div>
 
             <div className={`${styles['dp-tbl']} ${styles['timetable']}`}>
-              <div className={`${styles['dp-tbl-cel']} ${styles['timetable__time']}`}>
-                <div className={`${styles['dp-tbl']}`}>
+              <div className={`${styles['dp-tbl-cel']} ${styles['timetable__time']}`} style={{}}>
+                <div className={`${styles['dp-tbl']}`} style={{'borderSpacing':'10px'}}>
                   {timeColunmListHtml}
                 </div>
               </div>
-              <div className={`${styles['dp-tbl-cel']} ${styles['va-top']}`}>
+              <div className={`${styles['dp-tbl-cel']} ${styles['va-top']}`} ref={ref => this.timetable = ref}>
                 <ReactGridLayout
                   className="layout"
-                  layout={layout}
                   cols={12}
+                  layout={eventInstanceList}
                   rowHeight={10}
-                  width={1200}
+                  width={1000}
+                  maxRows={10}
+                  verticalCompact={false}
+                  onLayoutChange={this.onLayoutChange.bind(this)}
+                  onDragStart={this.onDragStart.bind(this)}
+                  onDrag={this.onDrag.bind(this)}
+                  onDragStop={this.onDragStop.bind(this)}
+                  onResizeStart={this.onResizeStart.bind(this)}
+                  onResize={this.onResize.bind(this)}
+                  onResizeStop={this.onResizeStop.bind(this)}
                 >
-                  {gridItemHtml}
+                  {_.map(eventInstanceList, this.createElement.bind(this))}
                 </ReactGridLayout>
               </div>
             </div>
 
             {PickyDateTimeComponent}
-            <div className={resizeContainerClass}>
-              <div className={resizeDragClass}>
-                 Resize from any edge or corner
-              </div>
-            </div>
 
-            <div className={`${styles['timetable']} `}>
-              <div className={`${styles['grid']}`}>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周一</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周二</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周三</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周四</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周五</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周六</div>
-                </div>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>周七</div>
-                </div>
-              </div>
-              <div className={`${styles['grid']}`}>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>00:00</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-              </div>
-              <div className={`${styles['grid']}`}>
-                <div className={`${styles['col']} ${styles['title']}`}>
-                  <div>01:00</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-                <div className={`${styles['col']}`}>
-                  <div>&nbsp;</div>
-                </div>
-              </div>
-            </div>
 
             <div id="outer-dropzone" className={`${styles['dropzone']}`}>
              #outer-dropzone

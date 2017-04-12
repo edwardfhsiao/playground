@@ -2677,7 +2677,11 @@ body .layout__ftf-yuan___SsswG {
 
 .index__timetable__time-item___20Mbs {
   padding: 0 10px;
-  height: 50px;
+  height: 30px;
+}
+
+.index__dp-tbl-row___3puBy{
+  background: #000;
 }
 
 .index__my-grid___2r5-5 {
