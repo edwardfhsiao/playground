@@ -1,22 +1,92 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import TimePicker from 'react-times';
+// use material theme
+import 'react-times/css/material/default.css';
 import Utils from 'COMMON/utils';
 import Input from 'COMPONENTS/Input';
 import Select from 'COMPONENTS/Select';
 import Label from 'COMPONENTS/Label';
 import interact from 'interact.js';
-import PickyDateTime from 'COMPONENTS/PickyDateTime';
+import PickyDateTime from 'react-picky-date-time';
 // import '../../../my_plugins/my_test';
 import cx from 'classnames';
 import styles from './styles/index.css';
 import Shake from 'shake.js';
 import 'fullpage.js/dist/jquery.fullpage.js';
 import 'fullpage.js/dist/jquery.fullpage.min.css';
+import ReactGridLayout from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import * as d3 from 'd3';
  let myShakeEvent = new Shake({
     threshold: 5, // optional shake strength threshold
     timeout: 1000 // optional, determines the frequency of event generation
 });
+
+const formatTime = function(val){
+  val = parseInt(val);
+  if (val < 10 && val >= 0){ val = '0' + val};
+  return val.toString();
+}
+
+const MIN_SEC_RANGE = 60;
+const HOUR_RANGE_24 = 24;
+const HOUR_RANGE_12 = 12;
+const DEFAULT_MINUTE_OFFSET = 30;
+
+const getTimeTextList = function(hourRange = HOUR_RANGE_24, minuteOffset = DEFAULT_MINUTE_OFFSET) {
+  let hourList = getTimeList(hourRange, 1, 24);
+  let minuteRange = MIN_SEC_RANGE / minuteOffset;
+  let minuteList = getTimeList(minuteRange, minuteOffset, MIN_SEC_RANGE);
+  let list = [];
+  minuteList.map((m) => {
+    hourList.map((h) => {
+      list.push(`${h}:${m}`);
+    });
+  });
+  if (hourList.length == HOUR_RANGE_12){
+    let listAM = [];
+    let listPM = [];
+    list.sort().map((i) => {
+      listAM.push(`${i} AM`);
+      listPM.push(`${i} PM`);
+    });
+    let newAM = listAM.slice(0, listAM.length - minuteRange);
+    let newPM = listPM.slice(0, listPM.length - minuteRange);
+    let remainingAMList = getRemainingList(listAM, minuteRange);
+    let remainingPMList = getRemainingList(listPM, minuteRange);
+
+    list = [...remainingAMList, ...newAM, ...remainingPMList, ...newPM];
+    return list;
+  }
+  else{
+    return list.sort();
+  }
+}
+
+const getRemainingList = function(list, remainingNum) {
+  let res = [];
+  for (let i = list.length - remainingNum; i < list.length; i++) {
+    res.push(list[i]);
+  }
+  return res;
+}
+
+const getTimeList = function(range, offset = 1, end = 60) {
+  let list = [];
+  for(let i = 0; i < range; i++){
+    let val = i * offset + offset;
+    val = val == end ? 0 : val;
+    val = formatTime(val);
+    list.push(val);
+  }
+  return list;
+}
+
+// const timeList = getTimeTextList(HOUR_RANGE_12);
+// const timeList = getTimeTextList(HOUR_RANGE_12, 15);
+// const timeList = getTimeTextList(HOUR_RANGE_24, 15);
 
 class Index extends Component {
 
@@ -28,6 +98,7 @@ class Index extends Component {
       phone: '',
       days: '',
       showPickyDateTime: false,
+      gridItem: ['a', 'b', 'c'],
     };
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPhoneKeyDown = this.onPhoneKeyDown.bind(this);
@@ -60,8 +131,32 @@ class Index extends Component {
     console.log(dateInfo);
   }
 
-  onReset(dateInfo) {
+  onResetDate(dateInfo) {
     console.log(dateInfo);
+  }
+
+  onSecondChange(secondInfo){
+    console.log(secondInfo);
+  }
+
+  onMinuteChange(minuteInfo){
+    console.log(minuteInfo);
+  }
+
+  onHourChange(hourInfo){
+    console.log(hourInfo);
+  }
+
+  onMeridiemChange(meridiemInfo){
+    console.log(meridiemInfo);
+  }
+
+  onResetTime(Info){
+    console.log(Info);
+  }
+
+  onClearTime(Info){
+    console.log(Info);
   }
 
   openPickyDateTime() {
@@ -292,6 +387,16 @@ class Index extends Component {
     })
   }
 
+onFocusChange() {
+
+}
+onTimeQuantumChange() {
+  
+}
+onTimeChange() {
+
+}
+
   render() {
 
     const resizeDragClass = cx(
@@ -307,28 +412,84 @@ class Index extends Component {
       phone,
       days,
       showPickyDateTime,
+      gridItem,
     } = this.state;
     // let styles = {};
     // console.log(styles);
     // console.log(styles['icon']);
     // console.log(styles['icon-chevron-right']);
+    let PickyDateTimeComponent;
+    PickyDateTimeComponent = (
+      <PickyDateTime
+        size="m"
+        mode={1}
+        locale={`zh-CNs`}
+        show={true}
+        onClose={this.onClose.bind(this)}
+        onYearPicked={this.onYearPicked.bind(this)}
+        onMonthPicked={this.onMonthPicked.bind(this)}
+        onDatePicked={this.onDatePicked.bind(this)}
+        onResetDate={this.onResetDate.bind(this)}
+        onSecondChange={this.onSecondChange.bind(this)}
+        onMinuteChange={this.onMinuteChange.bind(this)}
+        onHourChange={this.onHourChange.bind(this)}
+        onMeridiemChange={this.onMeridiemChange.bind(this)}
+        onResetTime={this.onResetTime.bind(this)}
+        onClearTime={this.onClearTime.bind(this)}
+      />
+    );
     let option = [{value: 'Monday', text: '周一'}, {value: 'Tuesday', text: '周二'}];
+
+    var layout = [
+      {i: 'a', x: 0, y: 0, w: 1, h: 2, static: false},
+      {i: 'b', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
+      {i: 'c', x: 4, y: 0, w: 1, h: 2}
+    ];
+
+    let gridItemHtml = gridItem.map((i, k) => {
+      return (
+        <div key={i} className={`${styles['grid-item']}`}>{i}</div>
+      );
+    });
+
+    let timeColunmListHtml = timeList.map((i, k) => {
+      return (
+        <div className={`${styles['dp-tbl-row']}`} key={k}>
+          <div className={`${styles['dp-tbl']}`}>
+            <div className={`${styles['dp-tbl-cel']} ${styles['timetable__time-item']} ${styles['va-middle']}`}>
+              {i}
+            </div>
+          </div>
+        </div>
+      );
+    });
+
     return(
       <div className="">
         <div id="fullpage">
           <div className="section intros" data-anchor="intros">
             <div onClick={this.openPickyDateTime.bind(this)}>dd</div>
-            <PickyDateTime
-              size="XS"
-              mode={1}
-              locale={`zh-CNs`}
-              show={true}
-              onClose={this.onClose.bind(this)}
-              onYearPicked={this.onYearPicked.bind(this)}
-              onMonthPicked={this.onMonthPicked.bind(this)}
-              onDatePicked={this.onDatePicked.bind(this)}
-              onReset={this.onReset.bind(this)}
-            />
+
+            <div className={`${styles['dp-tbl']} ${styles['timetable']}`}>
+              <div className={`${styles['dp-tbl-cel']} ${styles['timetable__time']}`}>
+                <div className={`${styles['dp-tbl']}`}>
+                  {timeColunmListHtml}
+                </div>
+              </div>
+              <div className={`${styles['dp-tbl-cel']} ${styles['va-top']}`}>
+                <ReactGridLayout
+                  className="layout"
+                  layout={layout}
+                  cols={12}
+                  rowHeight={10}
+                  width={1200}
+                >
+                  {gridItemHtml}
+                </ReactGridLayout>
+              </div>
+            </div>
+
+            {PickyDateTimeComponent}
             <div className={resizeContainerClass}>
               <div className={resizeDragClass}>
                  Resize from any edge or corner
@@ -504,6 +665,13 @@ class Index extends Component {
           <div className="section fp-auto-height footer" data-anchor="footer">
             <div className="copyright al-center">Copyright © Edward Xiao</div>
           </div>
+          <TimePicker
+            onFocusChange={this.onFocusChange.bind(this)}
+            onHourChange={this.onHourChange.bind(this)}
+            onMinuteChange={this.onMinuteChange.bind(this)}
+            onTimeChange={this.onTimeChange.bind(this)}
+            onTimeQuantumChange={this.onTimeQuantumChange.bind(this)}
+          />
         </div>
       </div>
     );

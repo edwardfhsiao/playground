@@ -46,6 +46,41 @@ var config = module.exports = {
       }),
     }, {
       test: /\.css$/,
+      include: /node_modules/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: [{
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+          }
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            plugins: function(webpack) {
+              return [
+                require('lost'),
+                require('postcss-import')({
+                  addDependencyTo: webpack
+                }),
+                require('postcss-cssnext')({
+                  autoprefixer: {
+                    browsers: "ie >= 9, ..."
+                  },
+                  features: {
+                    customProperties: {
+                      variables: styleVariables
+                    }
+                  }
+                }),
+              ];
+            }
+          }
+        }]
+      })
+    }, {
+      test: /\.css$/,
+      exclude: /node_modules/,
       use: ExtractTextPlugin.extract({
         fallback: 'style-loader',
         use: [{

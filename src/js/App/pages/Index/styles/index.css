@@ -5,10 +5,46 @@
 
 .timetable {
   /*border: 1px solid var(--oc-gray-7);*/
+  background: var(--oc-red-8);
+}
+
+.timetable__time {
+  width: 10%;
+  color: var(--oc-white);
+  background: var(--oc-red-7);
+}
+
+.timetable__time-item {
+  padding: 0 10px;
+  height: 50px;
 }
 
 .my-grid {
   composes: my-grid from 'STYLES/layout.css';
+}
+
+.dp-tbl {
+  composes: dp-tbl from 'STYLES/layout.css';
+}
+
+.dp-tbl-cel {
+  composes: dp-tbl-cel from 'STYLES/layout.css';
+}
+
+.va-middle {
+  vertical-align: middle;
+}
+
+.va-top{
+  vertical-align: top;
+}
+
+.va-bottom{
+  vertical-align: bottom;
+}
+
+.dp-tbl-row {
+  composes: dp-tbl-row from 'STYLES/layout.css';
 }
 
 .grid {
@@ -22,14 +58,18 @@
   /*lost-column: 300/950 0 20px;*/
   text-align: center;
   background: var(--oc-red-8);
-  &.title{
+  &.title {
     color: var(--oc-white);
     background: var(--oc-red-7);
   }
 }
 
-.col>div{
+.col>div {
   padding: 30px;
+}
+
+.grid-item {
+  background: #ccc;
 }
 
 .resize-drag {
