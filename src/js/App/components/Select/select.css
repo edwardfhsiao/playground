@@ -103,11 +103,15 @@
   }
 }*/
 
+.wrapper {
+  margin: 10px;
+}
+
 .select {
   outline: none;
   height: var(--inputHeight);
   line-height: 1em;
-     padding: 0 1em;
+  padding: 0 1em;
   font-size: 1em;
   transition: border 0.2s;
   color: var(--oc-gray-7);

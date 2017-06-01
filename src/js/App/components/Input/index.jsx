@@ -11,7 +11,7 @@ class Input extends React.Component {
     super(props);
     this.state = {
       error: false,
-      msg: '',
+      msg: ''
     };
     this.onChange = this.onChange.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -49,35 +49,27 @@ class Input extends React.Component {
 
   check(inputValue) {
     const { validationOption } = this.props;
-    const {
-      type,
-      check,
-      required,
-      name,
-      min,
-      max,
-      locale,
-    } = validationOption;
-    if (!check) { return }
+    const { type, check, required, name, min, max, locale } = validationOption;
+    if (!check) {
+      return;
+    }
 
     const value = inputValue || this.input.value;
     let error = false;
     if (required) {
       error = Validator['empty'](value) ? true : false;
-      if (!error){
-        if (type === 'number'){
+      if (!error) {
+        if (type === 'number') {
           error = !Validator[type](value, min, max);
-        }
-        else if (type === 'phone'){
+        } else if (type === 'phone') {
           error = !Validator[type](value, locale);
-        }
-        else{
+        } else {
           error = !Validator[type](value);
         }
       }
     }
     let msg = error ? ValidatorMsg[type] : '';
-    if (error && type === 'number' && (min || max)){
+    if (error && type === 'number' && (min || max)) {
       msg = `${name}的值必须为${min}-${max}`;
     }
     this.setState({ error, msg });
@@ -89,19 +81,26 @@ class Input extends React.Component {
       disabled,
       id,
       className,
+      wrapperClassName,
       placeholder,
       type,
       style,
       onFocus,
       onKeyDown,
       customStyle,
-      validationOption,
+      customWrapperStyle,
+      validationOption
     } = this.props;
 
-    const {
-      error,
-      msg,
-    } = this.state;
+    const { error, msg } = this.state;
+
+    const inputWrapperClass = cx(
+      wrapperClassName ? wrapperClassName : styles['wrapper'],
+      styles[style],
+      styles[className],
+      error && styles['error'],
+      customWrapperStyle
+    );
 
     const inputClass = cx(
       styles['input'],
@@ -111,18 +110,15 @@ class Input extends React.Component {
       customStyle
     );
 
-    const errorMsgClass = cx(
-      styles['msg'],
-      error && styles['error'],
-    );
+    const errorMsgClass = cx(styles['msg'], error && styles['error']);
 
     let msgHtml;
-    if (validationOption.showMsg && error && msg){
+    if (validationOption.showMsg && error && msg) {
       msgHtml = <div className={errorMsgClass}>{msg}</div>;
     }
 
     return (
-      <div>
+      <div className={inputWrapperClass}>
         <input
           id={id}
           type={type}
@@ -134,11 +130,11 @@ class Input extends React.Component {
           onKeyUp={this.onKeyUp}
           onFocus={onFocus}
           placeholder={placeholder}
-          ref={ref => this.input = ref}
+          ref={ref => (this.input = ref)}
         />
         {msgHtml}
       </div>
-    )
+    );
   }
 }
 
@@ -146,7 +142,9 @@ Input.propTypes = {
   disabled: PropTypes.bool,
   value: PropTypes.string,
   className: PropTypes.string,
+  wrapperClassName: PropTypes.string,
   customStyle: PropTypes.string,
+  customWrapperStyle: PropTypes.string,
   id: PropTypes.string,
   placeholder: PropTypes.string,
   type: PropTypes.string,
@@ -156,14 +154,16 @@ Input.propTypes = {
   onKeyUp: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,
-  validationOption: PropTypes.object,
+  validationOption: PropTypes.object
 };
 
 Input.defaultProps = {
   disabled: false,
   value: '',
   className: '',
+  wrapperClassName: '',
   customStyle: '',
+  customWrapperStyle: '',
   id: '',
   placeholder: '',
   type: 'string',
@@ -178,13 +178,13 @@ Input.defaultProps = {
     msgOnError: '',
     max: 0,
     min: 0,
-    locale: 'zh-CN',
+    locale: 'zh-CN'
   },
   onChange: () => {},
   onBlur: () => {},
   onKeyUp: () => {},
   onFocus: () => {},
-  onKeyDown: () => {},
-}
+  onKeyDown: () => {}
+};
 
 export default Input;

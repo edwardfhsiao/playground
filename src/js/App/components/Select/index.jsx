@@ -11,7 +11,7 @@ class Select extends React.Component {
     super(props);
     this.state = {
       error: false,
-      msg: '',
+      msg: ''
     };
     this.onChange = this.onChange.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -49,13 +49,10 @@ class Select extends React.Component {
 
   check(selectValue) {
     const { validationOption } = this.props;
-    const {
-      check,
-      required,
-      name,
-      locale,
-    } = validationOption;
-    if (!check) { return }
+    const { check, required, name, locale } = validationOption;
+    if (!check) {
+      return;
+    }
 
     const value = selectValue || this.select.value;
     let error = false;
@@ -73,18 +70,25 @@ class Select extends React.Component {
       disabled,
       id,
       className,
+      wrapperClassName,
       placeholder,
       style,
       onFocus,
       onKeyDown,
       customStyle,
-      validationOption,
+      customWrapperStyle,
+      validationOption
     } = this.props;
 
-    const {
-      error,
-      msg,
-    } = this.state;
+    const { error, msg } = this.state;
+
+    const selectWrapperClass = cx(
+      wrapperClassName ? wrapperClassName : styles['wrapper'],
+      styles[style],
+      styles[className],
+      error && styles['error'],
+      customWrapperStyle
+    );
 
     const selectClass = cx(
       styles['select'],
@@ -94,25 +98,26 @@ class Select extends React.Component {
       customStyle
     );
 
-    const errorMsgClass = cx(
-      styles['msg'],
-      error && styles['error'],
-    );
+    const errorMsgClass = cx(styles['msg'], error && styles['error']);
 
     let msgHtml;
-    if (validationOption.showMsg && error && msg){
+    if (validationOption.showMsg && error && msg) {
       msgHtml = <div className={errorMsgClass}>{msg}</div>;
     }
 
     let optionHtml;
-    if (option.length){
+    if (option.length) {
       optionHtml = option.map((item, key) => {
-        return <option key={key} value={item.value}>{item.text ? item.text : item.value}</option>
+        return (
+          <option key={key} value={item.value}>
+            {item.text ? item.text : item.value}
+          </option>
+        );
       });
     }
 
     return (
-      <div>
+      <div className={selectWrapperClass}>
         <select
           id={id}
           value={value}
@@ -121,14 +126,16 @@ class Select extends React.Component {
           onBlur={this.onBlur}
           onFocus={onFocus}
           placeholder={placeholder}
-          ref={ref => this.select = ref}
+          ref={ref => (this.select = ref)}
         >
-        {value && value != '' ? `` : <option value={value}>{placeholder}</option>}
-        {optionHtml}
+          {/*value && value != ''
+            ? ``
+            : <option value={value}>{placeholder}</option>*/}
+          {optionHtml}
         </select>
         {msgHtml}
       </div>
-    )
+    );
   }
 }
 
@@ -137,14 +144,16 @@ Select.propTypes = {
   value: PropTypes.string,
   option: PropTypes.array,
   className: PropTypes.string,
+  wrapperClassName: PropTypes.string,
   customStyle: PropTypes.string,
+  customWrapperStyle: PropTypes.string,
   id: PropTypes.string,
   placeholder: PropTypes.string,
   style: PropTypes.string,
   onChange: PropTypes.func,
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
-  validationOption: PropTypes.object,
+  validationOption: PropTypes.object
 };
 
 Select.defaultProps = {
@@ -152,7 +161,9 @@ Select.defaultProps = {
   value: '',
   option: [],
   className: '',
+  wrapperClassName: '',
   customStyle: '',
+  customWrapperStyle: '',
   id: '',
   placeholder: '',
   type: 'string',
@@ -164,11 +175,11 @@ Select.defaultProps = {
     name: '',
     msgOnSuccess: '',
     msgOnError: '',
-    locale: 'zh-CN',
+    locale: 'zh-CN'
   },
   onChange: () => {},
   onBlur: () => {},
-  onFocus: () => {},
-}
+  onFocus: () => {}
+};
 
 export default Select;
